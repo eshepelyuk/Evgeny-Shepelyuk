@@ -1,10 +1,12 @@
-package chess.moves;
+package chess.actions;
 
 import chess.Position;
 import chess.pieces.Pawn;
+import chess.pieces.Rook;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static chess.Player.White;
 import static java.util.Optional.ofNullable;
@@ -16,23 +18,33 @@ public class Moves {
         return retval;
     }
 
-    public static MoveFunction PAWN_ONE_STEP = (piece, curPos, gameState) -> {
+    public static MoveFunction ONE_CELL_FWD = (piece, curPos, gameState) -> {
         return ofNullable(piece instanceof Pawn ? piece : null)
             .flatMap(p -> p.getOwner() == White ? curPos.up(1) : curPos.down(1))
             .filter(gameState::isFreeAt)
             .map(Moves::toSet);
     };
 
-    public static MoveFunction PAWN_TWO_STEP = (piece, curPos, gameState) -> {
+    public static MoveFunction TWO_CELL_FWD = (piece, curPos, gameState) -> {
         return ofNullable(piece instanceof Pawn ? piece : null)
             .flatMap(p -> p.getOwner() == White ? curPos.up(2) : curPos.down(2))
             .filter(gameState::isFreeAt)
             .map(Moves::toSet);
     };
 
-    public static MoveFunction PAWN_MOVES = (piece, curPos, gameState) -> {
-        Set<Position> set = Arrays.asList(PAWN_ONE_STEP, PAWN_TWO_STEP).stream()
-            .map(f -> f.availableMoves(piece, curPos, gameState))
+    public static MoveFunction MOVE_UP = (piece, curPos, gameState) -> {
+        return ofNullable(piece instanceof Rook ? piece : null)
+            .flatMap(p -> p.getOwner() == White ? curPos.up(2) : curPos.down(2))
+            .filter(gameState::isFreeAt)
+            .map(Moves::toSet);
+    };
+
+    public static MoveFunction PAWN_ACTIONS = (piece, curPos, gameState) -> {
+        Stream<MoveFunction> moves = piece.getOwner().isInitialForPawn(curPos)
+            ? Stream.of(ONE_CELL_FWD, TWO_CELL_FWD)
+            : Stream.of(ONE_CELL_FWD);
+
+        Set<Position> set = moves.map(f -> f.availableMoves(piece, curPos, gameState))
             .filter(Optional::isPresent).map(Optional::get)
             .flatMap(Collection::stream)
             .collect(Collectors.toSet());

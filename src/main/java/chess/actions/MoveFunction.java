@@ -1,4 +1,4 @@
-package chess.moves;
+package chess.actions;
 
 import chess.GameState;
 import chess.Position;

@@ -1,4 +1,4 @@
-package chess.moves;
+package chess.actions;
 
 import chess.GameState;
 import chess.Player;
@@ -22,6 +22,9 @@ public class PawnMovesTest {
 
     private GameState gameState;
 
+    Pawn pawnWhite = new Pawn(Player.White);
+    Pawn pawnBlack = new Pawn(Player.Black);
+
     @Before
     public void setUp() {
         gameState = new GameState();
@@ -29,21 +32,20 @@ public class PawnMovesTest {
 
     @Test
     public void shouldAllowMovesForWhitePawn() {
-        Piece piece = new Pawn(Player.White);
         Position position = new Position("a2");
 
-        Optional<Set<Position>> positions = Moves.PAWN_ONE_STEP.availableMoves(piece, position, gameState);
+        Optional<Set<Position>> positions = Moves.ONE_CELL_FWD.availableMoves(pawnWhite, position, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItem(new Position("a3")));
 
-        positions = Moves.PAWN_TWO_STEP.availableMoves(piece, position, gameState);
+        positions = Moves.TWO_CELL_FWD.availableMoves(pawnWhite, position, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItem(new Position("a4")));
 
         //
-        positions = Moves.PAWN_MOVES.availableMoves(piece, position, gameState);
+        positions = Moves.PAWN_ACTIONS.availableMoves(pawnWhite, position, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(2));
 
@@ -52,24 +54,36 @@ public class PawnMovesTest {
 
     @Test
     public void shouldAllowMovesForBlackPawn() {
-        Piece piece = new Pawn(Player.Black);
         Position position = new Position("a7");
 
-        Optional<Set<Position>> positions = Moves.PAWN_ONE_STEP.availableMoves(piece, position, gameState);
+        Optional<Set<Position>> positions = Moves.ONE_CELL_FWD.availableMoves(pawnBlack, position, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItem(new Position("a6")));
 
-        positions = Moves.PAWN_TWO_STEP.availableMoves(piece, position, gameState);
+        positions = Moves.TWO_CELL_FWD.availableMoves(pawnBlack, position, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItem(new Position("a5")));
 
         //
-        positions = Moves.PAWN_MOVES.availableMoves(piece, position, gameState);
+        positions = Moves.PAWN_ACTIONS.availableMoves(pawnBlack, position, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(2));
         assertThat(positions.get(), hasItems(new Position("a6"), new Position("a5")));
+    }
+
+    @Test
+    public void shouldAllowOnlyOneCellMovementIfNotAtInitialPosition() {
+        Optional<Set<Position>> positions = Moves.PAWN_ACTIONS.availableMoves(pawnWhite, new Position("a3"), gameState);
+        assertThat(positions.isPresent(), is(true));
+        assertThat(positions.get().size(), is(1));
+        assertThat(positions.get(), hasItems(new Position("a4")));
+
+        positions = Moves.PAWN_ACTIONS.availableMoves(pawnBlack, new Position("a6"), gameState);
+        assertThat(positions.isPresent(), is(true));
+        assertThat(positions.get().size(), is(1));
+        assertThat(positions.get(), hasItems(new Position("a5")));
     }
 
     @Test
@@ -80,19 +94,16 @@ public class PawnMovesTest {
         Piece piece2 = new Queen(Player.Black);
         Position position2 = new Position("a2");
 
-        assertThat(Moves.PAWN_ONE_STEP.availableMoves(piece1, position1, gameState).isPresent(), is(false));
-        assertThat(Moves.PAWN_ONE_STEP.availableMoves(piece2, position2, gameState).isPresent(), is(false));
+        assertThat(Moves.ONE_CELL_FWD.availableMoves(piece1, position1, gameState).isPresent(), is(false));
+        assertThat(Moves.ONE_CELL_FWD.availableMoves(piece2, position2, gameState).isPresent(), is(false));
 
-        assertThat(Moves.PAWN_TWO_STEP.availableMoves(piece1, position1, gameState).isPresent(), is(false));
-        assertThat(Moves.PAWN_TWO_STEP.availableMoves(piece2, position2, gameState).isPresent(), is(false));
+        assertThat(Moves.TWO_CELL_FWD.availableMoves(piece1, position1, gameState).isPresent(), is(false));
+        assertThat(Moves.TWO_CELL_FWD.availableMoves(piece2, position2, gameState).isPresent(), is(false));
     }
 
     @Test
     public void shouldSkipMovesToOccupiedCell() {
-        Piece pieceWhite = new Pawn(Player.White);
         Position positionWhite = new Position("a2");
-
-        Piece pieceBlack = new Pawn(Player.Black);
         Position positionBlack = new Position("a7");
 
         //when occupy some cells
@@ -101,13 +112,13 @@ public class PawnMovesTest {
 
         //then only 1 move is available
         //white
-        Optional<Set<Position>> positions = Moves.PAWN_MOVES.availableMoves(pieceWhite, positionWhite, gameState);
+        Optional<Set<Position>> positions = Moves.PAWN_ACTIONS.availableMoves(pawnWhite, positionWhite, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItems(new Position("a4")));
 
         //black
-        positions = Moves.PAWN_MOVES.availableMoves(pieceBlack, positionBlack, gameState);
+        positions = Moves.PAWN_ACTIONS.availableMoves(pawnBlack, positionBlack, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItems(new Position("a6")));
