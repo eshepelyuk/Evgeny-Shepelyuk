@@ -49,7 +49,7 @@ public class PositionTest {
     public void shouldMoveDown() throws Exception {
         Position posOrig = new Position("a3");
 
-        //move up - out of board
+        //move up - within board
         Optional<Position> posNew = posOrig.down(2);
 
         assertThat(posNew.isPresent(), is(true));
@@ -58,6 +58,38 @@ public class PositionTest {
 
         // move up - out of board
         posNew = posNew.get().down(1);
+        assertThat(posNew.isPresent(), is(false));
+    }
+
+    @Test
+    public void shouldMoveLeft() {
+        Position posOrig = new Position("c3");
+
+        //move left - within board
+        Optional<Position> posNew = posOrig.left(2);
+
+        assertThat(posNew.isPresent(), is(true));
+        assertThat(posNew.get().getColumn(), is('a'));
+        assertThat(posNew.get().getRow(), is(posOrig.getRow()));
+
+        // move left - out of board
+        posNew = posNew.get().left(1);
+        assertThat(posNew.isPresent(), is(false));
+    }
+
+    @Test
+    public void shouldMoveRight() {
+        Position posOrig = new Position("f3");
+
+        //move left - within board
+        Optional<Position> posNew = posOrig.right(2);
+
+        assertThat(posNew.isPresent(), is(true));
+        assertThat(posNew.get().getColumn(), is('h'));
+        assertThat(posNew.get().getRow(), is(posOrig.getRow()));
+
+        // move left - out of board
+        posNew = posNew.get().right(1);
         assertThat(posNew.isPresent(), is(false));
     }
 }

@@ -1,5 +1,6 @@
 package chess.actions;
 
+import chess.Player;
 import chess.Position;
 import chess.pieces.Piece;
 
@@ -14,12 +15,21 @@ public class PiecePosition {
         this.position = position;
     }
 
+    public PiecePosition(Piece piece, String position) {
+        this.piece = piece;
+        this.position = new Position(position);
+    }
+
     public Piece getPiece() {
         return piece;
     }
 
     public Position getPosition() {
         return position;
+    }
+
+    public boolean isWhite() {
+        return getPiece().getOwner() == Player.White;
     }
 
     @Override

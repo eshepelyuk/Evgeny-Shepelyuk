@@ -75,6 +75,16 @@ public class Position {
         return newRow <= MAX_ROW ? of(new Position(this.column, newRow)) : empty();
     }
 
+    public Optional<Position> left(int columns) {
+        char newCol = (char) (this.column - columns);
+        return newCol >= MIN_COLUMN ? of(new Position(newCol, this.row)) : empty();
+    }
+
+    public Optional<Position> right(int columns) {
+        char newCol = (char) (this.column + columns);
+        return newCol <= MAX_COLUMN ? of(new Position(newCol, this.row)) : empty();
+    }
+
     public Optional<Position> down(int rows) {
         int newRow = this.row - rows;
         return newRow >= MIN_ROW ? of(new Position(this.column, newRow)) : empty();
