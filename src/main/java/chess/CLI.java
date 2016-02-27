@@ -15,7 +15,7 @@ public class CLI {
     private final BufferedReader inReader;
     private final PrintStream outStream;
 
-    private GameState gameState = null;
+    GameState gameState = null;
 
     public CLI(InputStream inputStream, PrintStream outStream) {
         this.inReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -68,12 +68,18 @@ public class CLI {
                 } else if (input.equals("list")) {
                     doList();
                 } else if (input.startsWith("move")) {
-                    writeOutput("====> Move Is Not Implemented (yet) <====");
+                    String[] arr = input.split("\\s");
+                    doMove(arr[1], arr[2]);
                 } else {
                     writeOutput("I didn't understand that.  Type 'help' for a list of commands.");
                 }
             }
         }
+    }
+
+    private void doMove(String from, String to) {
+        gameState.movePiece(new Position(from), new Position(to));
+        gameState.switchPlayer();
     }
 
     private void doList() {

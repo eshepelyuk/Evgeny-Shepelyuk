@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static chess.actions.Moves.PAWN_ACTIONS;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -108,6 +109,11 @@ public class GameState {
      */
     public void placePiece(Piece piece, Position position) {
         positionToPieceMap.put(position, piece);
+    }
+
+    public void movePiece(Position from, Position to) {
+        ofNullable(positionToPieceMap.remove(from))
+            .ifPresent(piece -> placePiece(piece, to));
     }
 
     public void switchPlayer() {

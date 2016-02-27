@@ -1,5 +1,7 @@
 package chess;
 
+import chess.pieces.Pawn;
+import chess.pieces.Piece;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -13,6 +15,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 import static org.mockito.Mockito.*;
@@ -78,9 +81,18 @@ public class CLITest {
         runCliWithInput("list");
         List<String> output = captureOutput();
 
-        assertEquals("Should have had 9 output calls", 22, output.size());
         assertThat(output, hasItems("a2 a3", "a2 a4"));
         assertThat(output, hasItems("h2 h3", "h2 h4"));
+    }
+
+    @Test
+    public void testMoveCommand() {
+        CLI cli = runCliWithInput("move a2 a4");
+        List<String> output = captureOutput();
+
+        assertThat(cli.gameState.getPieceAt("a2"), is((Piece) null));
+        assertThat(cli.gameState.getPieceAt("a4"), is(new Pawn(Player.White)));
+        assertThat(output, hasItems("Black's Move"));
     }
 
     private List<String> captureOutput() {
