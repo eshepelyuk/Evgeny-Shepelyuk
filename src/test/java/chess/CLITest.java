@@ -11,7 +11,8 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.List;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -57,8 +58,8 @@ public class CLITest {
         List<String> output = captureOutput();
 
         assertEquals("Should have had 6 calls to print strings", 6, output.size());
-        assertEquals("It should have printed the board first", 701, output.get(2).length());
-        assertEquals("It should have printed the board again", 701, output.get(4).length());
+        assertEquals("It should have printed the board first", 721, output.get(2).length());
+        assertEquals("It should have printed the board again", 721, output.get(4).length());
     }
 
     @Test

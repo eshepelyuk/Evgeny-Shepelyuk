@@ -1,12 +1,17 @@
 package chess;
 
+import chess.pieces.Pawn;
 import chess.pieces.Piece;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Map;
+
 import static junit.framework.Assert.*;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Basic unit tests for the GameState class
@@ -48,5 +53,44 @@ public class GameStateTest {
         Piece blackQueen = state.getPieceAt("d8");
         assertTrue("A queen should be at d8", blackQueen instanceof Queen);
         assertEquals("The queen at d8 should be owned by Black", Player.Black, blackQueen.getOwner());
+    }
+
+    @Test
+    public void shouldAllowToSwitchCurrentPlayer() throws Exception {
+        // white by default
+        assertEquals(Player.White, state.getCurrentPlayer());
+
+        //should switch to black
+        state.switchPlayer();
+        assertEquals(Player.Black, state.getCurrentPlayer());
+
+        // should switch to white on reset
+        state.reset();
+        assertEquals(Player.White, state.getCurrentPlayer());
+    }
+
+    @Test
+    public void shouldListPiecesForCurrentPlayer() {
+        // place some white pieces
+        state.placePiece(new Pawn(Player.White), new Position('a', 1));
+        state.placePiece(new Pawn(Player.White), new Position('b', 8));
+        // place some black pieces
+        state.placePiece(new Pawn(Player.Black), new Position('c', 8));
+        state.placePiece(new Pawn(Player.Black), new Position('d', 1));
+
+        // check whites
+        assertThat(state.getCurrentPlayer(), is(Player.White));
+        Map<Position, Piece> pieces = state.getCurrentPlayerPieces();
+        assertThat(pieces.size(), is(2));
+        assertThat(pieces.get(new Position('a', 1)), is(new Pawn(Player.White)));
+        assertThat(pieces.get(new Position('b', 8)), is(new Pawn(Player.White)));
+
+        //check blacks
+        state.switchPlayer();
+        assertThat(state.getCurrentPlayer(), is(Player.Black));
+        pieces = state.getCurrentPlayerPieces();
+        assertThat(pieces.size(), is(2));
+        assertThat(pieces.get(new Position('c', 8)), is(new Pawn(Player.Black)));
+        assertThat(pieces.get(new Position('d', 1)), is(new Pawn(Player.Black)));
     }
 }

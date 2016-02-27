@@ -6,6 +6,8 @@ import chess.pieces.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.stream.Collectors.toMap;
+
 /**
  * Class that represents the current state of the game.  Basically, what pieces are in which positions on the
  * board.
@@ -72,6 +74,9 @@ public class GameState {
         placePiece(new Pawn(Player.Black), new Position("f7"));
         placePiece(new Pawn(Player.Black), new Position("g7"));
         placePiece(new Pawn(Player.Black), new Position("h7"));
+
+        //current player
+        this.currentPlayer = Player.White;
     }
 
     /**
@@ -98,7 +103,17 @@ public class GameState {
      * @param piece The piece to place
      * @param position The position
      */
-    private void placePiece(Piece piece, Position position) {
+    public void placePiece(Piece piece, Position position) {
         positionToPieceMap.put(position, piece);
+    }
+
+    public void switchPlayer() {
+        this.currentPlayer = this.currentPlayer == Player.White ? Player.Black : Player.White;
+    }
+
+    public Map<Position, Piece> getCurrentPlayerPieces() {
+        return positionToPieceMap.entrySet().stream()
+            .filter(e -> e.getValue().getOwner() == this.currentPlayer)
+            .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

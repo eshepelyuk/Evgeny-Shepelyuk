@@ -26,4 +26,14 @@ public abstract class Piece {
     }
 
     protected abstract char getIdentifyingCharacter();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Piece piece = (Piece) o;
+
+        return owner == piece.owner;
+    }
 }
