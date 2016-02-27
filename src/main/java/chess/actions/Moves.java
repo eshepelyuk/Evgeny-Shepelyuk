@@ -4,10 +4,9 @@ import chess.pieces.Pawn;
 
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-import static chess.Player.White;
 import static chess.actions.GameActionSupplier.filteredSupplier;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.*;
 
 public class Moves {
@@ -18,13 +17,12 @@ public class Moves {
         .filter(gameState::isFreeAt)
         .map(p -> of(new MovePiece(current, p))).orElse(empty());
 
-    public static GameActionSupplier TWO_CELL_FWD = (current, gameState) -> {
-        Optional<MovePiece> o = ofNullable(current.getPiece() instanceof Pawn ? current.getPiece() : null)
-            .flatMap(p -> p.getOwner() == White ? current.getPosition().up(2) : current.getPosition().down(2))
-            .filter(gameState::isFreeAt)
-            .map(p -> new MovePiece(current, p));
-        return o.isPresent() ? of(o.get()) : empty();
-    };
+    public static GameActionSupplier TWO_CELL_FWD = (current, gameState) -> Optional.of(current)
+        .map(p -> p.getPiece().getOwner().isInitialForPawn(p.getPosition()) ? p : null)
+        .flatMap(p -> current.isWhite() ? p.getPosition().up(1) : p.getPosition().down(1))
+        .flatMap(p -> current.isWhite() ? p.up(1) : p.down(1))
+        .filter(gameState::isFreeAt)
+        .map(p -> of(new MovePiece(current, p))).orElse(Stream.empty());
 
     public static GameActionSupplier PAWN_MOVES = (current, gameState) -> {
         return Optional.of(current).filter(IS_PAWN).map(p -> {
