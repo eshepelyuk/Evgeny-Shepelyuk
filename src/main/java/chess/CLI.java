@@ -4,6 +4,8 @@ import chess.pieces.Piece;
 
 import java.io.*;
 
+import static java.lang.String.format;
+
 /**
  * This class provides the basic CLI interface to the Chess game.
  */
@@ -64,7 +66,7 @@ public class CLI {
                 } else if (input.equals("board")) {
                     writeOutput("Current Game:");
                 } else if (input.equals("list")) {
-                    writeOutput("====> List Is Not Implemented (yet) <====");
+                    doList();
                 } else if (input.startsWith("move")) {
                     writeOutput("====> Move Is Not Implemented (yet) <====");
                 } else {
@@ -72,6 +74,12 @@ public class CLI {
                 }
             }
         }
+    }
+
+    private void doList() {
+        gameState.availableMoves().forEach((pos, moves) -> {
+            moves.forEach(m -> writeOutput(format("%s %s", pos, m)));
+        });
     }
 
     private void doNewGame() {

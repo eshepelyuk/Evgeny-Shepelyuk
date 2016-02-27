@@ -3,9 +3,12 @@ package chess;
 
 import chess.pieces.*;
 
-import java.util.HashMap;
+import java.util.AbstractMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
+import static chess.actions.Moves.PAWN_ACTIONS;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -28,7 +31,7 @@ public class GameState {
      * Create the game state.
      */
     public GameState() {
-        positionToPieceMap = new HashMap<Position, Piece>();
+        positionToPieceMap = new LinkedHashMap<>();
     }
 
     public Player getCurrentPlayer() {
@@ -119,5 +122,12 @@ public class GameState {
 
     public boolean isFreeAt(Position position) {
         return !positionToPieceMap.containsKey(position);
+    }
+
+    public Map<Position, Set<Position>> availableMoves() {
+        return getCurrentPlayerPieces().entrySet().stream()
+            .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), PAWN_ACTIONS.availableMoves(e.getValue(), e.getKey(), this)))
+            .filter(e -> e.getValue().isPresent())
+            .collect(toMap(AbstractMap.SimpleEntry::getKey, e -> e.getValue().get()));
     }
 }

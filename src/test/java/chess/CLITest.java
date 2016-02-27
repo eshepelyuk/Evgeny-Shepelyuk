@@ -13,6 +13,8 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
+import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 import static org.mockito.Mockito.*;
 
 /**
@@ -69,6 +71,16 @@ public class CLITest {
 
         assertEquals("Should have had 9 output calls", 9, output.size());
         assertEquals("It should have printed the board three times", output.get(2), output.get(4));
+    }
+
+    @Test
+    public void testListCommand() throws Exception {
+        runCliWithInput("list");
+        List<String> output = captureOutput();
+
+        assertEquals("Should have had 9 output calls", 22, output.size());
+        assertThat(output, hasItems("a2 a3", "a2 a4"));
+        assertThat(output, hasItems("h2 h3", "h2 h4"));
     }
 
     private List<String> captureOutput() {
