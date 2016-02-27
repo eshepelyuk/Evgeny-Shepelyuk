@@ -86,13 +86,24 @@ public class CLITest {
     }
 
     @Test
-    public void testMoveCommand() {
+    public void testMoveCommandProper() {
         CLI cli = runCliWithInput("move a2 a4");
         List<String> output = captureOutput();
 
+        //then board is changed and player switched
         assertThat(cli.gameState.getPieceAt("a2"), is((Piece) null));
         assertThat(cli.gameState.getPieceAt("a4"), is(new Pawn(Player.White)));
         assertThat(output, hasItems("Black's Move"));
+    }
+
+    @Test
+    public void testMoveCommandImproper() {
+        runCliWithInput("move a0 a0");
+        List<String> output = captureOutput();
+
+        //then board is not changed and player not switched
+        assertThat(output.get(2), is(output.get(4)));
+        assertThat(output, hasItems("White's Move"));
     }
 
     private List<String> captureOutput() {
