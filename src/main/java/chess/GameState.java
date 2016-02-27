@@ -116,4 +116,8 @@ public class GameState {
             .filter(e -> e.getValue().getOwner() == this.currentPlayer)
             .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
+
+    public boolean isFreeAt(Position position) {
+        return !positionToPieceMap.containsKey(position);
+    }
 }
