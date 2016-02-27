@@ -1,9 +1,7 @@
 package chess;
 
 
-import chess.actions.GameAction;
-import chess.actions.Moves;
-import chess.actions.PiecePosition;
+import chess.actions.*;
 import chess.pieces.*;
 
 import java.util.AbstractMap;
@@ -114,16 +112,23 @@ public class GameState {
         positionToPieceMap.put(position, piece);
     }
 
-    public void movePiece(Position from, Position to) {
-        ofNullable(positionToPieceMap.remove(from))
-            .ifPresent(piece -> placePiece(piece, to));
+    public <T extends GameAction> void applyAction(T action) {
+        if (action instanceof MovePiece) {
+            MovePiece movePiece = (MovePiece) action;
+            ofNullable(positionToPieceMap.remove(movePiece.getPiecePosition().getPosition())).ifPresent(piece -> placePiece(piece, movePiece.getTarget()));
+            switchPlayer();
+        } else if (action instanceof KillPiece) {
+            KillPiece killPiece = (KillPiece) action;
+            positionToPieceMap.remove(killPiece.getTarget());
+            applyAction(new MovePiece(killPiece.getPiecePosition(), killPiece.getTarget()));
+        }
     }
 
-    public void switchPlayer() {
+    void switchPlayer() {
         this.currentPlayer = this.currentPlayer == Player.White ? Player.Black : Player.White;
     }
 
-    public Set<PiecePosition> getCurrentPlayerPieces() {
+    Set<PiecePosition> getCurrentPlayerPieces() {
         return positionToPieceMap.entrySet().stream()
             .filter(e -> e.getValue().getOwner() == this.currentPlayer)
             .map(e -> new PiecePosition(e.getValue(), e.getKey()))

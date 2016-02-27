@@ -3,6 +3,7 @@ package chess;
 import chess.pieces.Piece;
 
 import java.io.*;
+import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -78,8 +79,14 @@ public class CLI {
     }
 
     private void doMove(String from, String to) {
-        gameState.movePiece(new Position(from), new Position(to));
-        gameState.switchPlayer();
+        Position positionFrom = new Position(from);
+        Position positionTo = new Position(to);
+        gameState.availableMoves().entrySet().stream()
+            .filter(e -> e.getKey().equals(positionFrom))
+            .findFirst()
+            .map(Map.Entry::getValue)
+            .flatMap(s -> s.stream().filter(action -> action.getTarget().equals(positionTo)).findFirst())
+            .ifPresent(action -> gameState.applyAction(action));
     }
 
     private void doList() {

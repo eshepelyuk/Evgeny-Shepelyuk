@@ -1,5 +1,7 @@
 package chess;
 
+import chess.actions.KillPiece;
+import chess.actions.MovePiece;
 import chess.actions.PiecePosition;
 import chess.pieces.Pawn;
 import chess.pieces.Piece;
@@ -94,5 +96,40 @@ public class GameStateTest {
         assertThat(pieces.size(), is(2));
         assertThat(pieces, hasItem(new PiecePosition(new Pawn(Player.Black), new Position('c', 8))));
         assertThat(pieces, hasItem(new PiecePosition(new Pawn(Player.Black), new Position('d', 1))));
+    }
+
+    @Test
+    public void shouldProcessMovePieceAction() {
+        PiecePosition original = new PiecePosition(new Pawn(Player.White), "a2");
+
+        state.placePiece(original.getPiece(), original.getPosition());
+
+        //when
+        Position newPosition = new Position("a3");
+        assertThat(state.getCurrentPlayer(), is(Player.White));
+        state.applyAction(new MovePiece(original, newPosition));
+
+        //then piece if moved, palyer is switched
+        assertThat(state.getPieceAt(original.getPosition()), is((Piece) null));
+        assertThat(state.getPieceAt(newPosition), is(original.getPiece()));
+        assertThat(state.getCurrentPlayer(), is(Player.Black));
+    }
+
+    @Test
+    public void shouldProcessKillPieceAction() {
+        PiecePosition current = new PiecePosition(new Pawn(Player.White), "a2");
+        PiecePosition target = new PiecePosition(new Pawn(Player.Black), "b3");
+
+        state.placePiece(current.getPiece(), current.getPosition());
+        state.placePiece(target.getPiece(), target.getPosition());
+
+        //when
+        assertThat(state.getCurrentPlayer(), is(Player.White));
+        state.applyAction(new KillPiece(current, target.getPosition()));
+
+        //then piece if moved, palyer is switched
+        assertThat(state.getPieceAt(current.getPosition()), is((Piece) null));
+        assertThat(state.getPieceAt(target.getPosition()), is(current.getPiece()));
+        assertThat(state.getCurrentPlayer(), is(Player.Black));
     }
 }
