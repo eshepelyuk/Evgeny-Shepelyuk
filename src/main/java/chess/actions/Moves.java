@@ -4,9 +4,9 @@ import chess.pieces.Pawn;
 
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import static chess.Player.White;
+import static chess.actions.GameActionSupplier.filteredSupplier;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.*;
 
@@ -14,13 +14,9 @@ public class Moves {
 
     public static Predicate<PiecePosition> IS_PAWN = piece -> piece.getPiece() instanceof Pawn;
 
-    public static GameActionSupplier ONE_CELL_FWD = (current, gameState) -> {
-        Optional<MovePiece> o = ofNullable(current.getPiece() instanceof Pawn ? current.getPiece() : null)
-            .flatMap(p -> p.getOwner() == White ? current.getPosition().up(1) : current.getPosition().down(1))
-            .filter(gameState::isFreeAt)
-            .map(p -> new MovePiece(current, p));
-        return o.isPresent() ? of(o.get()) : empty();
-    };
+    public static GameActionSupplier ONE_CELL_FWD = (current, gameState) -> (current.isWhite() ? current.getPosition().up(1) : current.getPosition().down(1))
+        .filter(gameState::isFreeAt)
+        .map(p -> of(new MovePiece(current, p))).orElse(empty());
 
     public static GameActionSupplier TWO_CELL_FWD = (current, gameState) -> {
         Optional<MovePiece> o = ofNullable(current.getPiece() instanceof Pawn ? current.getPiece() : null)
@@ -50,13 +46,7 @@ public class Moves {
         .map(p -> of(new KillPiece(current, p)))
         .orElse(empty());
 
-    public static GameActionSupplier PAWN_KILLS = filteredSuppliers(IS_PAWN, KILL_FWD_LEFT, KILL_FWD_RIGHT);
+    public static GameActionSupplier PAWN_KILLS = filteredSupplier(IS_PAWN, KILL_FWD_LEFT, KILL_FWD_RIGHT);
 
-    public static GameActionSupplier PAWN_ACTIONS = filteredSuppliers(IS_PAWN, PAWN_MOVES, PAWN_KILLS);
-
-    public static GameActionSupplier filteredSuppliers(Predicate<PiecePosition> predicate, GameActionSupplier... suppliers) {
-        return (current, gameState) -> Optional.of(current).filter(predicate)
-            .map(p -> Stream.of(suppliers).flatMap(f -> f.apply(p, gameState)))
-            .orElse(empty());
-    }
+    public static GameActionSupplier PAWN_ACTIONS = filteredSupplier(IS_PAWN, PAWN_MOVES, PAWN_KILLS);
 }
