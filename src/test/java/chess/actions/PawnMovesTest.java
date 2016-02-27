@@ -10,7 +10,6 @@ import chess.pieces.Queen;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Optional;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -33,54 +32,48 @@ public class PawnMovesTest {
 
     @Test
     public void shouldAllowMovesForWhitePawn() {
-        Position position = new Position("a2");
+        PiecePosition position = new PiecePosition(pawnWhite, new Position("a2"));
 
-        Optional<Set<Position>> positions = Moves.ONE_CELL_FWD_OLD.availableMoves(pawnWhite, position, gameState);
-        assertThat(positions.isPresent(), is(true));
-        assertThat(positions.get().size(), is(1));
-        assertThat(positions.get(), hasItem(new Position("a3")));
+        Set<Position> positions = Moves.ONE_CELL_FWD.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
+        assertThat(positions.size(), is(1));
+        assertThat(positions, hasItem(new Position("a3")));
 
-        positions = Moves.TWO_CELL_FWD_OLD.availableMoves(pawnWhite, position, gameState);
-        assertThat(positions.isPresent(), is(true));
-        assertThat(positions.get().size(), is(1));
-        assertThat(positions.get(), hasItem(new Position("a4")));
+        positions = Moves.TWO_CELL_FWD.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
+        assertThat(positions.size(), is(1));
+        assertThat(positions, hasItem(new Position("a4")));
 
         //
-        positions = Moves.PAWN_ACTIONS_OLD.availableMoves(pawnWhite, position, gameState);
-        assertThat(positions.isPresent(), is(true));
-        assertThat(positions.get().size(), is(2));
-
-        assertThat(positions.get(), hasItems(new Position("a3"), new Position("a4")));
+        positions = Moves.PAWN_ACTIONS.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
+        assertThat(positions.size(), is(2));
+        assertThat(positions, hasItems(new Position("a3"), new Position("a4")));
     }
 
     @Test
     public void shouldAllowMovesForBlackPawn() {
-        Position position = new Position("a7");
+        PiecePosition position = new PiecePosition(pawnBlack, new Position("a7"));
 
-        Set<MovePiece> positions = Moves.ONE_CELL_FWD.apply(new PiecePosition(pawnBlack, position), gameState).collect(toSet());
+        Set<Position> positions = Moves.ONE_CELL_FWD.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
-        assertThat(positions.iterator().next().getTarget(), is(new Position("a6")));
+        assertThat(positions, hasItem(new Position("a6")));
 
-        positions = Moves.TWO_CELL_FWD.apply(new PiecePosition(pawnBlack, position), gameState).collect(toSet());
+        positions = Moves.TWO_CELL_FWD.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
-        assertThat(positions.iterator().next().getTarget(), is(new Position("a5")));
+        assertThat(positions, hasItem(new Position("a5")));
 
-        positions = Moves.PAWN_ACTIONS.apply(new PiecePosition(pawnBlack, position), gameState).collect(toSet());
+        positions = Moves.PAWN_ACTIONS.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
         assertThat(positions.size(), is(2));
-        assertThat(positions.stream().map(MovePiece::getTarget).collect(toSet()), hasItems(new Position("a6"), new Position("a5")));
+        assertThat(positions, hasItems(new Position("a6"), new Position("a5")));
     }
 
     @Test
     public void shouldAllowOnlyOneCellMovementIfNotAtInitialPosition() {
-        Optional<Set<Position>> positions = Moves.PAWN_ACTIONS_OLD.availableMoves(pawnWhite, new Position("a3"), gameState);
-        assertThat(positions.isPresent(), is(true));
-        assertThat(positions.get().size(), is(1));
-        assertThat(positions.get(), hasItems(new Position("a4")));
+        Set<Position> positions = Moves.PAWN_ACTIONS.apply(new PiecePosition(pawnWhite, new Position("a3")), gameState).map(MovePiece::getTarget).collect(toSet());
+        assertThat(positions.size(), is(1));
+        assertThat(positions, hasItems(new Position("a4")));
 
-        positions = Moves.PAWN_ACTIONS_OLD.availableMoves(pawnBlack, new Position("a6"), gameState);
-        assertThat(positions.isPresent(), is(true));
-        assertThat(positions.get().size(), is(1));
-        assertThat(positions.get(), hasItems(new Position("a5")));
+        positions = Moves.PAWN_ACTIONS.apply(new PiecePosition(pawnBlack, new Position("a6")), gameState).map(MovePiece::getTarget).collect(toSet());
+        assertThat(positions.size(), is(1));
+        assertThat(positions, hasItems(new Position("a5")));
     }
 
     @Test
@@ -91,11 +84,11 @@ public class PawnMovesTest {
         Piece piece2 = new Queen(Player.Black);
         Position position2 = new Position("a2");
 
-        assertThat(Moves.ONE_CELL_FWD_OLD.availableMoves(piece1, position1, gameState).isPresent(), is(false));
-        assertThat(Moves.ONE_CELL_FWD_OLD.availableMoves(piece2, position2, gameState).isPresent(), is(false));
+        assertThat(Moves.ONE_CELL_FWD.apply(new PiecePosition(piece1, position1), gameState).findFirst().isPresent(), is(false));
+        assertThat(Moves.ONE_CELL_FWD.apply(new PiecePosition(piece2, position2), gameState).findFirst().isPresent(), is(false));
 
-        assertThat(Moves.TWO_CELL_FWD_OLD.availableMoves(piece1, position1, gameState).isPresent(), is(false));
-        assertThat(Moves.TWO_CELL_FWD_OLD.availableMoves(piece2, position2, gameState).isPresent(), is(false));
+        assertThat(Moves.TWO_CELL_FWD.apply(new PiecePosition(piece1, position1), gameState).findFirst().isPresent(), is(false));
+        assertThat(Moves.TWO_CELL_FWD.apply(new PiecePosition(piece2, position2), gameState).findFirst().isPresent(), is(false));
     }
 
     @Test
@@ -109,16 +102,13 @@ public class PawnMovesTest {
 
         //then only 1 move is available
         //white
-        Optional<Set<Position>> positions = Moves.PAWN_ACTIONS_OLD.availableMoves(pawnWhite, positionWhite, gameState);
-        assertThat(positions.isPresent(), is(true));
-        assertThat(positions.get().size(), is(1));
-        assertThat(positions.get(), hasItems(new Position("a4")));
+        Set<Position> positions = Moves.PAWN_ACTIONS.apply(new PiecePosition(pawnWhite, positionWhite), gameState).map(MovePiece::getTarget).collect(toSet());
+        assertThat(positions.size(), is(1));
+        assertThat(positions, hasItems(new Position("a4")));
 
         //black
-        positions = Moves.PAWN_ACTIONS_OLD.availableMoves(pawnBlack, positionBlack, gameState);
-        assertThat(positions.isPresent(), is(true));
-        assertThat(positions.get().size(), is(1));
-        assertThat(positions.get(), hasItems(new Position("a6")));
-
+        positions = Moves.PAWN_ACTIONS.apply(new PiecePosition(pawnBlack, positionBlack), gameState).map(MovePiece::getTarget).collect(toSet());
+        assertThat(positions.size(), is(1));
+        assertThat(positions, hasItems(new Position("a6")));
     }
 }
