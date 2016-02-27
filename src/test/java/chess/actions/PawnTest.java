@@ -144,7 +144,13 @@ public class PawnTest {
         Set<Position> positions = extractPositions(ONE_CELL_FWD, new PiecePosition(pawnWhite, "a2"));
         assertThat(positions.size(), is(0));
 
+        positions = extractPositions(TWO_CELL_FWD, new PiecePosition(pawnWhite, "a2"));
+        assertThat(positions.size(), is(0));
+
         //black
+        positions = extractPositions(ONE_CELL_FWD, new PiecePosition(pawnBlack, "a7"));
+        assertThat(positions.size(), is(1));
+
         positions = extractPositions(TWO_CELL_FWD, new PiecePosition(pawnBlack, "a7"));
         assertThat(positions.size(), is(0));
     }

@@ -20,6 +20,7 @@ public class Moves {
     public static GameActionSupplier TWO_CELL_FWD = (current, gameState) -> Optional.of(current)
         .map(p -> p.getPiece().getOwner().isInitialForPawn(p.getPosition()) ? p : null)
         .flatMap(p -> current.isWhite() ? p.getPosition().up(1) : p.getPosition().down(1))
+        .filter(gameState::isFreeAt)
         .flatMap(p -> current.isWhite() ? p.up(1) : p.down(1))
         .filter(gameState::isFreeAt)
         .map(p -> of(new MovePiece(current, p))).orElse(empty());
