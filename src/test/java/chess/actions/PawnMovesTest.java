@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.util.Optional;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
@@ -34,18 +35,18 @@ public class PawnMovesTest {
     public void shouldAllowMovesForWhitePawn() {
         Position position = new Position("a2");
 
-        Optional<Set<Position>> positions = Moves.ONE_CELL_FWD.availableMoves(pawnWhite, position, gameState);
+        Optional<Set<Position>> positions = Moves.ONE_CELL_FWD_OLD.availableMoves(pawnWhite, position, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItem(new Position("a3")));
 
-        positions = Moves.TWO_CELL_FWD.availableMoves(pawnWhite, position, gameState);
+        positions = Moves.TWO_CELL_FWD_OLD.availableMoves(pawnWhite, position, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItem(new Position("a4")));
 
         //
-        positions = Moves.PAWN_ACTIONS.availableMoves(pawnWhite, position, gameState);
+        positions = Moves.PAWN_ACTIONS_OLD.availableMoves(pawnWhite, position, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(2));
 
@@ -56,31 +57,27 @@ public class PawnMovesTest {
     public void shouldAllowMovesForBlackPawn() {
         Position position = new Position("a7");
 
-        Optional<Set<Position>> positions = Moves.ONE_CELL_FWD.availableMoves(pawnBlack, position, gameState);
-        assertThat(positions.isPresent(), is(true));
-        assertThat(positions.get().size(), is(1));
-        assertThat(positions.get(), hasItem(new Position("a6")));
+        Set<MovePiece> positions = Moves.ONE_CELL_FWD.apply(new PiecePosition(pawnBlack, position), gameState).collect(toSet());
+        assertThat(positions.size(), is(1));
+        assertThat(positions.iterator().next().getTarget(), is(new Position("a6")));
 
-        positions = Moves.TWO_CELL_FWD.availableMoves(pawnBlack, position, gameState);
-        assertThat(positions.isPresent(), is(true));
-        assertThat(positions.get().size(), is(1));
-        assertThat(positions.get(), hasItem(new Position("a5")));
+        positions = Moves.TWO_CELL_FWD.apply(new PiecePosition(pawnBlack, position), gameState).collect(toSet());
+        assertThat(positions.size(), is(1));
+        assertThat(positions.iterator().next().getTarget(), is(new Position("a5")));
 
-        //
-        positions = Moves.PAWN_ACTIONS.availableMoves(pawnBlack, position, gameState);
-        assertThat(positions.isPresent(), is(true));
-        assertThat(positions.get().size(), is(2));
-        assertThat(positions.get(), hasItems(new Position("a6"), new Position("a5")));
+        positions = Moves.PAWN_ACTIONS.apply(new PiecePosition(pawnBlack, position), gameState).collect(toSet());
+        assertThat(positions.size(), is(2));
+        assertThat(positions.stream().map(MovePiece::getTarget).collect(toSet()), hasItems(new Position("a6"), new Position("a5")));
     }
 
     @Test
     public void shouldAllowOnlyOneCellMovementIfNotAtInitialPosition() {
-        Optional<Set<Position>> positions = Moves.PAWN_ACTIONS.availableMoves(pawnWhite, new Position("a3"), gameState);
+        Optional<Set<Position>> positions = Moves.PAWN_ACTIONS_OLD.availableMoves(pawnWhite, new Position("a3"), gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItems(new Position("a4")));
 
-        positions = Moves.PAWN_ACTIONS.availableMoves(pawnBlack, new Position("a6"), gameState);
+        positions = Moves.PAWN_ACTIONS_OLD.availableMoves(pawnBlack, new Position("a6"), gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItems(new Position("a5")));
@@ -94,11 +91,11 @@ public class PawnMovesTest {
         Piece piece2 = new Queen(Player.Black);
         Position position2 = new Position("a2");
 
-        assertThat(Moves.ONE_CELL_FWD.availableMoves(piece1, position1, gameState).isPresent(), is(false));
-        assertThat(Moves.ONE_CELL_FWD.availableMoves(piece2, position2, gameState).isPresent(), is(false));
+        assertThat(Moves.ONE_CELL_FWD_OLD.availableMoves(piece1, position1, gameState).isPresent(), is(false));
+        assertThat(Moves.ONE_CELL_FWD_OLD.availableMoves(piece2, position2, gameState).isPresent(), is(false));
 
-        assertThat(Moves.TWO_CELL_FWD.availableMoves(piece1, position1, gameState).isPresent(), is(false));
-        assertThat(Moves.TWO_CELL_FWD.availableMoves(piece2, position2, gameState).isPresent(), is(false));
+        assertThat(Moves.TWO_CELL_FWD_OLD.availableMoves(piece1, position1, gameState).isPresent(), is(false));
+        assertThat(Moves.TWO_CELL_FWD_OLD.availableMoves(piece2, position2, gameState).isPresent(), is(false));
     }
 
     @Test
@@ -112,13 +109,13 @@ public class PawnMovesTest {
 
         //then only 1 move is available
         //white
-        Optional<Set<Position>> positions = Moves.PAWN_ACTIONS.availableMoves(pawnWhite, positionWhite, gameState);
+        Optional<Set<Position>> positions = Moves.PAWN_ACTIONS_OLD.availableMoves(pawnWhite, positionWhite, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItems(new Position("a4")));
 
         //black
-        positions = Moves.PAWN_ACTIONS.availableMoves(pawnBlack, positionBlack, gameState);
+        positions = Moves.PAWN_ACTIONS_OLD.availableMoves(pawnBlack, positionBlack, gameState);
         assertThat(positions.isPresent(), is(true));
         assertThat(positions.get().size(), is(1));
         assertThat(positions.get(), hasItems(new Position("a6")));

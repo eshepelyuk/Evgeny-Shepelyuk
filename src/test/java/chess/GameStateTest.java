@@ -1,5 +1,6 @@
 package chess;
 
+import chess.actions.PiecePosition;
 import chess.pieces.Pawn;
 import chess.pieces.Piece;
 import chess.pieces.Queen;
@@ -7,11 +8,12 @@ import chess.pieces.Rook;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Map;
+import java.util.Set;
 
 import static junit.framework.Assert.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 /**
  * Basic unit tests for the GameState class
@@ -80,17 +82,17 @@ public class GameStateTest {
 
         // check whites
         assertThat(state.getCurrentPlayer(), is(Player.White));
-        Map<Position, Piece> pieces = state.getCurrentPlayerPieces();
+        Set<PiecePosition> pieces = state.getCurrentPlayerPieces();
         assertThat(pieces.size(), is(2));
-        assertThat(pieces.get(new Position('a', 1)), is(new Pawn(Player.White)));
-        assertThat(pieces.get(new Position('b', 8)), is(new Pawn(Player.White)));
+        assertThat(pieces, hasItem(new PiecePosition(new Pawn(Player.White), new Position('a', 1))));
+        assertThat(pieces, hasItem(new PiecePosition(new Pawn(Player.White), new Position('b', 8))));
 
         //check blacks
         state.switchPlayer();
         assertThat(state.getCurrentPlayer(), is(Player.Black));
         pieces = state.getCurrentPlayerPieces();
         assertThat(pieces.size(), is(2));
-        assertThat(pieces.get(new Position('c', 8)), is(new Pawn(Player.Black)));
-        assertThat(pieces.get(new Position('d', 1)), is(new Pawn(Player.Black)));
+        assertThat(pieces, hasItem(new PiecePosition(new Pawn(Player.Black), new Position('c', 8))));
+        assertThat(pieces, hasItem(new PiecePosition(new Pawn(Player.Black), new Position('d', 1))));
     }
 }

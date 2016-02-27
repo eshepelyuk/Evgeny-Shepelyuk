@@ -83,8 +83,8 @@ public class CLI {
     }
 
     private void doList() {
-        gameState.availableMoves().forEach((pos, moves) -> {
-            moves.forEach(m -> writeOutput(format("%s %s", pos, m)));
+        gameState.availableMoves().forEach((pos, actions) -> {
+            actions.forEach(action -> writeOutput(format("%s %s", pos, action.getTarget())));
         });
     }
 

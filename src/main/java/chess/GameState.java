@@ -1,14 +1,17 @@
 package chess;
 
 
+import chess.actions.GameAction;
+import chess.actions.Moves;
+import chess.actions.PiecePosition;
 import chess.pieces.*;
 
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import static chess.actions.Moves.PAWN_ACTIONS;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 
@@ -120,20 +123,21 @@ public class GameState {
         this.currentPlayer = this.currentPlayer == Player.White ? Player.Black : Player.White;
     }
 
-    public Map<Position, Piece> getCurrentPlayerPieces() {
+    public Set<PiecePosition> getCurrentPlayerPieces() {
         return positionToPieceMap.entrySet().stream()
             .filter(e -> e.getValue().getOwner() == this.currentPlayer)
-            .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .map(e -> new PiecePosition(e.getValue(), e.getKey()))
+            .collect(Collectors.toSet());
     }
 
     public boolean isFreeAt(Position position) {
         return !positionToPieceMap.containsKey(position);
     }
 
-    public Map<Position, Set<Position>> availableMoves() {
-        return getCurrentPlayerPieces().entrySet().stream()
-            .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), PAWN_ACTIONS.availableMoves(e.getValue(), e.getKey(), this)))
-            .filter(e -> e.getValue().isPresent())
-            .collect(toMap(AbstractMap.SimpleEntry::getKey, e -> e.getValue().get()));
+    public Map<Position, Set<? extends GameAction>> availableMoves() {
+        return getCurrentPlayerPieces().stream()
+            .map(pp -> new AbstractMap.SimpleEntry<>(pp.getPosition(), Moves.PAWN_ACTIONS.apply(pp, this).collect(Collectors.toSet())))
+            .filter(e -> e.getValue().size() > 0)
+            .collect(toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 }
