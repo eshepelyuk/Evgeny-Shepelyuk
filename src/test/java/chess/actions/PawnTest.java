@@ -34,11 +34,11 @@ public class PawnTest {
     public void shouldAllowMovesForWhitePawn() {
         PiecePosition position = new PiecePosition(pawnWhite, new Position("a2"));
 
-        Set<Position> positions = Moves.ONE_CELL_FWD.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
+        Set<Position> positions = Moves.ONE_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(new Position("a3")));
 
-        positions = Moves.TWO_CELL_FWD.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
+        positions = Moves.TWO_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(new Position("a4")));
 
@@ -102,11 +102,11 @@ public class PawnTest {
     public void shouldAllowMovesForBlackPawn() {
         PiecePosition position = new PiecePosition(pawnBlack, new Position("a7"));
 
-        Set<Position> positions = Moves.ONE_CELL_FWD.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
+        Set<Position> positions = Moves.ONE_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(new Position("a6")));
 
-        positions = Moves.TWO_CELL_FWD.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
+        positions = Moves.TWO_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(new Position("a5")));
 
@@ -168,7 +168,7 @@ public class PawnTest {
         assertThat(positions, hasItem(new Position("a3")));
     }
 
-    private Set<Position> extractPositions(GameActionSupplier<? extends GameAction> supplier, PiecePosition piecePosition) {
+    private Set<Position> extractPositions(GameActionSupplier supplier, PiecePosition piecePosition) {
         return supplier.apply(piecePosition, gameState).map(GameAction::getTarget).collect(toSet());
     }
 }

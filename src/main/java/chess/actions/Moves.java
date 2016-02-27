@@ -14,7 +14,7 @@ public class Moves {
 
     public static Predicate<PiecePosition> IS_PAWN = piece -> piece.getPiece() instanceof Pawn;
 
-    public static MovePieceActionSupplier ONE_CELL_FWD = (current, gameState) -> {
+    public static GameActionSupplier ONE_CELL_FWD = (current, gameState) -> {
         Optional<MovePiece> o = ofNullable(current.getPiece() instanceof Pawn ? current.getPiece() : null)
             .flatMap(p -> p.getOwner() == White ? current.getPosition().up(1) : current.getPosition().down(1))
             .filter(gameState::isFreeAt)
@@ -22,7 +22,7 @@ public class Moves {
         return o.isPresent() ? of(o.get()) : empty();
     };
 
-    public static MovePieceActionSupplier TWO_CELL_FWD = (current, gameState) -> {
+    public static GameActionSupplier TWO_CELL_FWD = (current, gameState) -> {
         Optional<MovePiece> o = ofNullable(current.getPiece() instanceof Pawn ? current.getPiece() : null)
             .flatMap(p -> p.getOwner() == White ? current.getPosition().up(2) : current.getPosition().down(2))
             .filter(gameState::isFreeAt)
@@ -30,7 +30,7 @@ public class Moves {
         return o.isPresent() ? of(o.get()) : empty();
     };
 
-    public static MovePieceActionSupplier PAWN_MOVES = (current, gameState) -> {
+    public static GameActionSupplier PAWN_MOVES = (current, gameState) -> {
         return Optional.of(current).filter(IS_PAWN).map(p -> {
             return p.getPiece().getOwner().isInitialForPawn(current.getPosition())
                 ? concat(ONE_CELL_FWD.apply(current, gameState), TWO_CELL_FWD.apply(current, gameState))
@@ -38,23 +38,25 @@ public class Moves {
         }).orElse(empty());
     };
 
-    public static KillPieceActionSupplier KILL_FWD_RIGHT = (current, gameState) -> current.getPosition().right(1)
+    public static GameActionSupplier KILL_FWD_RIGHT = (current, gameState) -> current.getPosition().right(1)
         .flatMap(p -> current.isWhite() ? p.up(1) : p.down(1))
         .filter(p -> !gameState.isFreeAt(p) && gameState.getPieceAt(p).getOwner() != current.getPiece().getOwner())
         .map(p -> of(new KillPiece(current, p)))
         .orElse(empty());
 
-    public static KillPieceActionSupplier KILL_FWD_LEFT = (current, gameState) -> current.getPosition().left(1)
+    public static GameActionSupplier KILL_FWD_LEFT = (current, gameState) -> current.getPosition().left(1)
         .flatMap(p -> current.isWhite() ? p.up(1) : p.down(1))
         .filter(p -> !gameState.isFreeAt(p) && gameState.getPieceAt(p).getOwner() != current.getPiece().getOwner())
         .map(p -> of(new KillPiece(current, p)))
         .orElse(empty());
 
-    public static KillPieceActionSupplier PAWN_KILLS = (current, gameState) -> Optional.of(current).filter(IS_PAWN)
-        .map(p -> Stream.of(KILL_FWD_LEFT, KILL_FWD_RIGHT).flatMap(f -> f.apply(p, gameState)))
-        .orElse(empty());
+    public static GameActionSupplier PAWN_KILLS = filteredSuppliers(IS_PAWN, KILL_FWD_LEFT, KILL_FWD_RIGHT);
 
-    public static GameActionSupplier<? extends GameAction> PAWN_ACTIONS = (current, gameState) -> Optional.of(current).filter(IS_PAWN)
-        .map(p -> Stream.of(PAWN_MOVES, PAWN_KILLS).flatMap(f -> f.apply(p, gameState)))
-        .orElse(empty());
+    public static GameActionSupplier PAWN_ACTIONS = filteredSuppliers(IS_PAWN, PAWN_MOVES, PAWN_KILLS);
+
+    public static GameActionSupplier filteredSuppliers(Predicate<PiecePosition> predicate, GameActionSupplier... suppliers) {
+        return (current, gameState) -> Optional.of(current).filter(predicate)
+            .map(p -> Stream.of(suppliers).flatMap(f -> f.apply(p, gameState)))
+            .orElse(empty());
+    }
 }
