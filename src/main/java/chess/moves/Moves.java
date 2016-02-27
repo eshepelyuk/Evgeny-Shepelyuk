@@ -1,13 +1,12 @@
 package chess.moves;
 
-import chess.Player;
 import chess.Position;
 import chess.pieces.Pawn;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static chess.Player.White;
 
 public class Moves {
     private static Set<Position> toSet(Position... positions) {
@@ -17,15 +16,21 @@ public class Moves {
     }
 
     public static MoveFunction PAWN_ONE_STEP = (piece, curPos, gameState) -> {
-        if (piece instanceof Pawn) {
-            Optional<Position> newPos = null;
-            if (piece.getOwner() == Player.White) {
-                newPos = curPos.up(1);
-            } else {
-                newPos = curPos.down(1);
-            }
-            return newPos.map(Moves::toSet);
-        }
-        return Optional.empty();
+        return Optional.ofNullable(piece instanceof Pawn ? piece : null)
+            .flatMap(p -> p.getOwner() == White ? curPos.up(1) : curPos.down(1))
+            .map(Moves::toSet);
+    };
+
+    public static MoveFunction PAWN_TWO_STEP = (piece, curPos, gameState) -> {
+        return Optional.ofNullable(piece instanceof Pawn ? piece : null)
+            .flatMap(p -> p.getOwner() == White ? curPos.up(2) : curPos.down(2))
+            .map(Moves::toSet);
+    };
+
+    public static MoveFunction PAWN_MOVES = (piece, curPos, gameState) -> {
+        Set<Position> set = Arrays.asList(PAWN_ONE_STEP, PAWN_TWO_STEP).stream()
+            .map(f -> f.availableMoves(piece, curPos, gameState))
+            .filter(Optional::isPresent).map(Optional::get).flatMap(Collection::stream).collect(Collectors.toSet());
+        return (set.size() > 0) ? Optional.of(set) : Optional.empty();
     };
 }
