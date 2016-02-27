@@ -1,6 +1,7 @@
 package chess.actions;
 
 import chess.GameState;
+import chess.PiecePosition;
 
 import java.util.Optional;
 import java.util.function.BiFunction;

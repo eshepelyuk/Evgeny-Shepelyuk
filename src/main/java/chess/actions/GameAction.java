@@ -1,5 +1,6 @@
 package chess.actions;
 
+import chess.PiecePosition;
 import chess.Position;
 
 public abstract class GameAction {

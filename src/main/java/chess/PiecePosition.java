@@ -1,7 +1,5 @@
-package chess.actions;
+package chess;
 
-import chess.Player;
-import chess.Position;
 import chess.pieces.Piece;
 
 import java.util.Objects;

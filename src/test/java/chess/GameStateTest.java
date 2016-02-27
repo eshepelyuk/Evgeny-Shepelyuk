@@ -2,7 +2,6 @@ package chess;
 
 import chess.actions.KillPiece;
 import chess.actions.MovePiece;
-import chess.actions.PiecePosition;
 import chess.pieces.Pawn;
 import chess.pieces.Piece;
 import chess.pieces.Queen;
