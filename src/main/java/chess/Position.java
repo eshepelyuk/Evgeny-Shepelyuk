@@ -1,5 +1,10 @@
 package chess;
 
+import java.util.Optional;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+
 /**
  * Describes a position on the Chess Board
  */
@@ -65,4 +70,13 @@ public class Position {
         return "" + column + row;
     }
 
+    public Optional<Position> up(int rows) {
+        int newRow = this.row + rows;
+        return newRow <= MAX_ROW ? of(new Position(this.column, newRow)) : empty();
+    }
+
+    public Optional<Position> down(int rows) {
+        int newRow = this.row - rows;
+        return newRow >= MIN_ROW ? of(new Position(this.column, newRow)) : empty();
+    }
 }
