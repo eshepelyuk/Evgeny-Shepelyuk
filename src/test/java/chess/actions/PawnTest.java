@@ -43,7 +43,7 @@ public class PawnTest {
         assertThat(positions, hasItem(new Position("a4")));
 
         //
-        positions = PAWN_ACTIONS.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
+        positions = PAWN_ACTIONS.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(2));
         assertThat(positions, hasItems(new Position("a3"), new Position("a4")));
     }
@@ -110,18 +110,18 @@ public class PawnTest {
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(new Position("a5")));
 
-        positions = PAWN_ACTIONS.apply(position, gameState).map(MovePiece::getTarget).collect(toSet());
+        positions = PAWN_ACTIONS.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(2));
         assertThat(positions, hasItems(new Position("a6"), new Position("a5")));
     }
 
     @Test
     public void shouldAllowOnlyOneCellMovementIfNotAtInitialPosition() {
-        Set<Position> positions = PAWN_ACTIONS.apply(new PiecePosition(pawnWhite, new Position("a3")), gameState).map(MovePiece::getTarget).collect(toSet());
+        Set<Position> positions = PAWN_ACTIONS.apply(new PiecePosition(pawnWhite, new Position("a3")), gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItems(new Position("a4")));
 
-        positions = PAWN_ACTIONS.apply(new PiecePosition(pawnBlack, new Position("a6")), gameState).map(MovePiece::getTarget).collect(toSet());
+        positions = PAWN_ACTIONS.apply(new PiecePosition(pawnBlack, new Position("a6")), gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItems(new Position("a5")));
     }
@@ -147,6 +147,25 @@ public class PawnTest {
         //black
         positions = extractPositions(TWO_CELL_FWD, new PiecePosition(pawnBlack, "a7"));
         assertThat(positions.size(), is(0));
+    }
+
+    @Test
+    public void shouldAllowMovesAndKillsForPawn() {
+        PiecePosition pawn = new PiecePosition(pawnWhite, new Position("b2"));
+
+        // no kills
+        Set<Position> positions = extractPositions(Moves.PAWN_ACTIONS, pawn);
+        assertThat(positions.size(), is(2));
+        assertThat(positions, hasItem(new Position("b3")));
+        assertThat(positions, hasItem(new Position("b4")));
+
+        // kill to left
+        gameState.placePiece(new King(Player.Black), new Position("a3"));
+        positions = extractPositions(Moves.PAWN_ACTIONS, pawn);
+        assertThat(positions.size(), is(3));
+        assertThat(positions, hasItem(new Position("b3")));
+        assertThat(positions, hasItem(new Position("b4")));
+        assertThat(positions, hasItem(new Position("a3")));
     }
 
     private Set<Position> extractPositions(GameActionSupplier<? extends GameAction> supplier, PiecePosition piecePosition) {

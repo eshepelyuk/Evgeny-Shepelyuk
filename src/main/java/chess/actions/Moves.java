@@ -4,6 +4,7 @@ import chess.pieces.Pawn;
 
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static chess.Player.White;
 import static java.util.Optional.ofNullable;
@@ -45,14 +46,15 @@ public class Moves {
 
     public static KillPieceActionSupplier KILL_FWD_LEFT = (current, gameState) -> current.getPosition().left(1)
         .flatMap(p -> current.isWhite() ? p.up(1) : p.down(1))
-        .filter(p -> !gameState.isFreeAt(p))
         .filter(p -> !gameState.isFreeAt(p) && gameState.getPieceAt(p).getOwner() != current.getPiece().getOwner())
         .map(p -> of(new KillPiece(current, p)))
         .orElse(empty());
 
     public static KillPieceActionSupplier PAWN_KILLS = (current, gameState) -> Optional.of(current).filter(IS_PAWN)
-        .map(p -> concat(KILL_FWD_LEFT.apply(p, gameState), KILL_FWD_RIGHT.apply(p, gameState)))
+        .map(p -> Stream.of(KILL_FWD_LEFT, KILL_FWD_RIGHT).flatMap(f -> f.apply(p, gameState)))
         .orElse(empty());
 
-    public static MovePieceActionSupplier PAWN_ACTIONS = PAWN_MOVES;
+    public static GameActionSupplier<? extends GameAction> PAWN_ACTIONS = (current, gameState) -> Optional.of(current).filter(IS_PAWN)
+        .map(p -> Stream.of(PAWN_MOVES, PAWN_KILLS).flatMap(f -> f.apply(p, gameState)))
+        .orElse(empty());
 }
