@@ -5,7 +5,7 @@ import chess.PiecePosition;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static chess.actions.GameActionSupplier.filteredSupplier;
+import static chess.actions.GameActionSupplier.filterSuppliers;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
 
@@ -25,7 +25,7 @@ public class PawnActions {
         .filter(gameState::isFreeAt)
         .map(p -> of(new MovePiece(current, p))).orElse(empty());
 
-    protected static GameActionSupplier PAWN_MOVES = filteredSupplier(IS_PAWN, ONE_CELL_FWD, TWO_CELL_FWD);
+    protected static GameActionSupplier PAWN_MOVES = filterSuppliers(IS_PAWN, ONE_CELL_FWD, TWO_CELL_FWD);
 
     protected static GameActionSupplier KILL_FWD_RIGHT = (current, gameState) -> current.getPosition().right(1)
         .flatMap(p -> current.isWhite() ? p.up(1) : p.down(1))
@@ -39,7 +39,7 @@ public class PawnActions {
         .map(p -> of(new KillPiece(current, p)))
         .orElse(empty());
 
-    protected static GameActionSupplier PAWN_KILLS = filteredSupplier(IS_PAWN, KILL_FWD_LEFT, KILL_FWD_RIGHT);
+    protected static GameActionSupplier PAWN_KILLS = filterSuppliers(IS_PAWN, KILL_FWD_LEFT, KILL_FWD_RIGHT);
 
-    public static GameActionSupplier PAWN_ACTIONS = filteredSupplier(IS_PAWN, PAWN_MOVES, PAWN_KILLS);
+    public static GameActionSupplier PAWN_ACTIONS = filterSuppliers(IS_PAWN, PAWN_MOVES, PAWN_KILLS);
 }

@@ -139,7 +139,9 @@ public class GameState {
         return !positionToPieceMap.containsKey(position);
     }
 
-    protected static GameActionSupplier PIECES_ACTIONS = PawnActions.PAWN_ACTIONS;
+    protected static GameActionSupplier PIECES_ACTIONS = GameActionSupplier.concatSuppliers(
+        PawnActions.PAWN_ACTIONS,
+        QueenActions.QUEEN_ACTIONS);
 
     public Map<Position, Set<? extends GameAction>> availableMoves() {
         return getCurrentPlayerPieces().stream()
