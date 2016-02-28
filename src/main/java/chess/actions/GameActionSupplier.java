@@ -2,6 +2,7 @@ package chess.actions;
 
 import chess.GameState;
 import chess.PiecePosition;
+import chess.pieces.Piece;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -28,5 +29,11 @@ public interface GameActionSupplier extends BiFunction<PiecePosition, GameState,
         return (PiecePosition pp, GameState gs) -> direction.streamFrom(pp, of(gs::isFreeAt)).map(p -> new MovePiece(pp, p));
     }
 
-
+    static GameActionSupplier createEatPieceSupplier(Direction direction) {
+        return (PiecePosition pp, GameState gs) -> direction.streamFrom(pp, Optional.empty())
+            .filter(p -> {
+                Piece target = gs.getPieceAt(p);
+                return target != null && target.getOwner() != pp.getPiece().getOwner();
+            }).limit(1).map(p -> new EatPiece(pp, p));
+    }
 }

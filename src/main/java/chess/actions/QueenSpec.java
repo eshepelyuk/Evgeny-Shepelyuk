@@ -5,9 +5,7 @@ import chess.pieces.Queen;
 
 import java.util.function.Predicate;
 
-import static chess.actions.EatPieceIterator.createEatPieceSupplier;
-import static chess.actions.GameActionSupplier.createMovePieceSupplier;
-import static chess.actions.GameActionSupplier.filterSuppliers;
+import static chess.actions.GameActionSupplier.*;
 
 public class QueenSpec {
 

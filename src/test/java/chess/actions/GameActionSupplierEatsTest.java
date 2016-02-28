@@ -11,14 +11,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static chess.actions.EatPieceIterator.createEatPieceSupplier;
+import static chess.actions.GameActionSupplier.createEatPieceSupplier;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 
 @RunWith(Parameterized.class)
-public class EatPieceIteratorTest {
+public class GameActionSupplierEatsTest {
     private final GameActionSupplier testSupplier;
 
     private final Position closeTarget;
@@ -51,7 +51,7 @@ public class EatPieceIteratorTest {
         );
     }
 
-    public EatPieceIteratorTest(GameActionSupplier supplier, Position closeTarget, Position distantTarget) {
+    public GameActionSupplierEatsTest(GameActionSupplier supplier, Position closeTarget, Position distantTarget) {
         this.testSupplier = supplier;
         this.closeTarget = closeTarget;
         this.distantTarget = distantTarget;
