@@ -2,7 +2,6 @@ package chess;
 
 
 import chess.actions.*;
-import chess.actions.Pawn;
 import chess.pieces.*;
 
 import java.util.AbstractMap;
@@ -140,7 +139,7 @@ public class GameState {
         return !positionToPieceMap.containsKey(position);
     }
 
-    protected static GameActionSupplier PIECES_ACTIONS = Pawn.PAWN_ACTIONS;
+    protected static GameActionSupplier PIECES_ACTIONS = PawnActions.PAWN_ACTIONS;
 
     public Map<Position, Set<? extends GameAction>> availableMoves() {
         return getCurrentPlayerPieces().stream()

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 
-public class PawnTest extends Pawn {
+public class PawnActionsTest extends PawnActions {
 
     private GameState gameState;
 
@@ -33,11 +33,11 @@ public class PawnTest extends Pawn {
     public void shouldAllowMovesForWhitePawn() {
         PiecePosition position = new PiecePosition(pawnWhite, new Position("a2"));
 
-        Set<Position> positions = Pawn.ONE_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
+        Set<Position> positions = PawnActions.ONE_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(new Position("a3")));
 
-        positions = Pawn.TWO_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
+        positions = PawnActions.TWO_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(new Position("a4")));
 
@@ -52,23 +52,23 @@ public class PawnTest extends Pawn {
         PiecePosition pawn = new PiecePosition(pawnWhite, "b2");
 
         // no kills
-        Set<Position> positions = extractPositions(Pawn.PAWN_KILLS, pawn);
+        Set<Position> positions = extractPositions(PawnActions.PAWN_KILLS, pawn);
         assertThat(positions.size(), is(0));
 
         // kill to left
         gameState.placePiece(new King(Player.Black), new Position("a3"));
-        positions = extractPositions(Pawn.KILL_FWD_LEFT, pawn);
+        positions = extractPositions(PawnActions.KILL_FWD_LEFT, pawn);
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(new Position("a3")));
 
         // kill to right
         gameState.placePiece(new Queen(Player.Black), new Position("c3"));
-        positions = extractPositions(Pawn.KILL_FWD_RIGHT, pawn);
+        positions = extractPositions(PawnActions.KILL_FWD_RIGHT, pawn);
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(new Position("c3")));
 
         //
-        positions = extractPositions(Pawn.PAWN_KILLS, pawn);
+        positions = extractPositions(PawnActions.PAWN_KILLS, pawn);
         assertThat(positions.size(), is(2));
         assertThat(positions, hasItem(new Position("a3")));
         assertThat(positions, hasItem(new Position("c3")));
@@ -79,21 +79,21 @@ public class PawnTest extends Pawn {
         PiecePosition pawn = new PiecePosition(pawnWhite, "b2");
 
         // no kills
-        Set<Position> positions = extractPositions(Pawn.PAWN_KILLS, pawn);
+        Set<Position> positions = extractPositions(PawnActions.PAWN_KILLS, pawn);
         assertThat(positions.size(), is(0));
 
         // kill to left
         gameState.placePiece(new King(Player.White), new Position("a3"));
-        positions = extractPositions(Pawn.KILL_FWD_LEFT, pawn);
+        positions = extractPositions(PawnActions.KILL_FWD_LEFT, pawn);
         assertThat(positions.size(), is(0));
 
         // kill to right
         gameState.placePiece(new Queen(Player.White), new Position("c3"));
-        positions = extractPositions(Pawn.KILL_FWD_RIGHT, pawn);
+        positions = extractPositions(PawnActions.KILL_FWD_RIGHT, pawn);
         assertThat(positions.size(), is(0));
 
         //
-        positions = extractPositions(Pawn.PAWN_KILLS, pawn);
+        positions = extractPositions(PawnActions.PAWN_KILLS, pawn);
         assertThat(positions.size(), is(0));
     }
 
@@ -101,11 +101,11 @@ public class PawnTest extends Pawn {
     public void shouldAllowMovesForBlackPawn() {
         PiecePosition position = new PiecePosition(pawnBlack, new Position("a7"));
 
-        Set<Position> positions = Pawn.ONE_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
+        Set<Position> positions = PawnActions.ONE_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(new Position("a6")));
 
-        positions = Pawn.TWO_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
+        positions = PawnActions.TWO_CELL_FWD.apply(position, gameState).map(GameAction::getTarget).collect(toSet());
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(new Position("a5")));
 
@@ -127,9 +127,9 @@ public class PawnTest extends Pawn {
 
     @Test
     public void shouldSkipNonPawnPieces() throws Exception {
-        assertThat(Pawn.PAWN_MOVES.apply(new PiecePosition(new King(Player.White), "a1"), gameState).findFirst().isPresent(), is(false));
-        assertThat(Pawn.PAWN_KILLS.apply(new PiecePosition(new King(Player.White), "a1"), gameState).findFirst().isPresent(), is(false));
-        assertThat(Pawn.PAWN_ACTIONS.apply(new PiecePosition(new King(Player.White), "a1"), gameState).findFirst().isPresent(), is(false));
+        assertThat(PawnActions.PAWN_MOVES.apply(new PiecePosition(new King(Player.White), "a1"), gameState).findFirst().isPresent(), is(false));
+        assertThat(PawnActions.PAWN_KILLS.apply(new PiecePosition(new King(Player.White), "a1"), gameState).findFirst().isPresent(), is(false));
+        assertThat(PawnActions.PAWN_ACTIONS.apply(new PiecePosition(new King(Player.White), "a1"), gameState).findFirst().isPresent(), is(false));
     }
 
     @Test
@@ -159,14 +159,14 @@ public class PawnTest extends Pawn {
         PiecePosition pawn = new PiecePosition(pawnWhite, new Position("b2"));
 
         // no kills
-        Set<Position> positions = extractPositions(Pawn.PAWN_ACTIONS, pawn);
+        Set<Position> positions = extractPositions(PawnActions.PAWN_ACTIONS, pawn);
         assertThat(positions.size(), is(2));
         assertThat(positions, hasItem(new Position("b3")));
         assertThat(positions, hasItem(new Position("b4")));
 
         // kill to left
         gameState.placePiece(new King(Player.Black), new Position("a3"));
-        positions = extractPositions(Pawn.PAWN_ACTIONS, pawn);
+        positions = extractPositions(PawnActions.PAWN_ACTIONS, pawn);
         assertThat(positions.size(), is(3));
         assertThat(positions, hasItem(new Position("b3")));
         assertThat(positions, hasItem(new Position("b4")));
