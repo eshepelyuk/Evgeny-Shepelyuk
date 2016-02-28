@@ -6,8 +6,8 @@ import chess.pieces.Queen;
 import java.util.function.Predicate;
 
 import static chess.actions.EatPieceIterator.createEatPieceSupplier;
+import static chess.actions.GameActionSupplier.createMovePieceSupplier;
 import static chess.actions.GameActionSupplier.filterSuppliers;
-import static chess.actions.MovePieceIterator.createMovePieceSupplier;
 
 public class QueenSpec {
 
@@ -22,6 +22,7 @@ public class QueenSpec {
         createMovePieceSupplier(Direction.RIGHT),
         createMovePieceSupplier(Direction.DOWN),
         createMovePieceSupplier(Direction.LEFT),
+
         createEatPieceSupplier(Direction.DOWN_LEFT),
         createEatPieceSupplier(Direction.DOWN_RIGHT),
         createEatPieceSupplier(Direction.UP_LEFT),

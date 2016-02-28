@@ -70,21 +70,37 @@ public class Position {
         return "" + column + row;
     }
 
+    /**
+     * @param rows to increase
+     * @return {@link Optional} containing copy of this position shifted to the top, or {@link Optional#empty()} if out of board
+     */
     public Optional<Position> up(int rows) {
         int newRow = this.row + rows;
         return newRow <= MAX_ROW ? of(new Position(this.column, newRow)) : empty();
     }
 
-    public Optional<Position> left(int columns) {
-        char newCol = (char) (this.column - columns);
+    /**
+     * @param cols to increase
+     * @return {@link Optional} containing copy of this position shifter to the left, or {@link Optional#empty()} if out of board
+     */
+    public Optional<Position> left(int cols) {
+        char newCol = (char) (this.column - cols);
         return newCol >= MIN_COLUMN ? of(new Position(newCol, this.row)) : empty();
     }
 
-    public Optional<Position> right(int columns) {
-        char newCol = (char) (this.column + columns);
+    /**
+     * @param cols to increase
+     * @return {@link Optional} containing copy of this position shifted to the right, or {@link Optional#empty()} if out of board
+     */
+    public Optional<Position> right(int cols) {
+        char newCol = (char) (this.column + cols);
         return newCol <= MAX_COLUMN ? of(new Position(newCol, this.row)) : empty();
     }
 
+    /**
+     * @param rows to increase
+     * @return {@link Optional} containing copy of this position shifted to the bottom, or {@link Optional#empty()} if out of board
+     */
     public Optional<Position> down(int rows) {
         int newRow = this.row - rows;
         return newRow >= MIN_ROW ? of(new Position(this.column, newRow)) : empty();

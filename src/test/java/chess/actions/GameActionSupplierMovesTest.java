@@ -11,13 +11,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static chess.actions.MovePieceIterator.createMovePieceSupplier;
+import static chess.actions.GameActionSupplier.createMovePieceSupplier;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 
 @RunWith(Parameterized.class)
-public class MovePieceIteratorTest {
+public class GameActionSupplierMovesTest {
 
     private final GameActionSupplier testSupplier;
     private final Position[] expectedPositions;
@@ -57,7 +57,7 @@ public class MovePieceIteratorTest {
         );
     }
 
-    public MovePieceIteratorTest(GameActionSupplier supplier, Position[] positions) {
+    public GameActionSupplierMovesTest(GameActionSupplier supplier, Position[] positions) {
         this.testSupplier = supplier;
         this.expectedPositions = positions;
     }
