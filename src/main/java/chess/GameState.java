@@ -141,7 +141,7 @@ public class GameState {
 
     protected static GameActionSupplier PIECES_ACTIONS = GameActionSupplier.concatSuppliers(
         PawnActions.PAWN_ACTIONS,
-        QueenActions.QUEEN_ACTIONS);
+        QueenSpec.QUEEN_ACTIONS);
 
     public Map<Position, Set<? extends GameAction>> availableMoves() {
         return getCurrentPlayerPieces().stream()

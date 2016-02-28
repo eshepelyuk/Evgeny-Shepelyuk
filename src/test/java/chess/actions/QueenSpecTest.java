@@ -11,7 +11,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 
-public class QueenActionsTest {
+public class QueenSpecTest {
 
     private PositionExtractor extractor = new PositionExtractor(new GameState());
 
@@ -29,15 +29,18 @@ public class QueenActionsTest {
         extractor.getGameState().placePiece(new Pawn(Player.Black), new Position("b3"));
         extractor.getGameState().placePiece(new Pawn(Player.Black), new Position("b5"));
 
-        Set<Position> set = extractor.extractMoves(QueenActions.QUEEN_ACTIONS, position);
+        Set<Position> set = extractor.extractMoves(QueenSpec.QUEEN_ACTIONS, position);
         assertThat(set.size(), is(8));
 
         assertThat(set, hasItems(new Position("c6"), new Position("d6"), new Position("e6")));
         assertThat(set, hasItems(new Position("e5"), new Position("e4"), new Position("d4")));
         assertThat(set, hasItems(new Position("c4"), new Position("c5")));
 
-        set = extractor.extractKills(QueenActions.QUEEN_ACTIONS, position);
-        assertThat(set.size(), is(0));
+        set = extractor.extractKills(QueenSpec.QUEEN_ACTIONS, position);
+        assertThat(set.size(), is(8));
+        assertThat(set, hasItems(new Position("b7"), new Position("d7"), new Position("f7")));
+        assertThat(set, hasItems(new Position("f5"), new Position("f3"), new Position("d3")));
+        assertThat(set, hasItems(new Position("b3"), new Position("b5")));
 
     }
 }
