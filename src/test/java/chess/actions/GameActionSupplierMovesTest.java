@@ -77,20 +77,4 @@ public class GameActionSupplierMovesTest {
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItems(expectedPositions[0]));
     }
-
-    @Test
-    public void shouldAllowLimitedMoves() throws Exception {
-        // when direction is free then can move ntil end of board
-        Set<Position> positions = extractor.extractMoves(testSupplier, position);
-        assertThat(positions.size(), is(expectedPositions.length));
-        assertThat(positions, hasItems(expectedPositions));
-
-        // when place obstacle
-        extractor.getGameState().placePiece(new Pawn(Player.Black), expectedPositions[1]);
-
-        // then moves are limited
-        positions = extractor.extractMoves(testSupplier, position);
-        assertThat(positions.size(), is(1));
-        assertThat(positions, hasItems(expectedPositions[0]));
-    }
 }

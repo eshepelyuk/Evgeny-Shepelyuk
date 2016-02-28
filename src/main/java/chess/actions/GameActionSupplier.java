@@ -42,4 +42,13 @@ public interface GameActionSupplier extends BiFunction<PiecePosition, GameState,
                 return target != null && target.getOwner() != pp.getPiece().getOwner();
             }).limit(1).map(p -> new EatPiece(pp, p));
     }
+
+    static GameActionSupplier createBoundedEatPieceSupplier(Direction direction, long limit) {
+        return (PiecePosition pp, GameState gs) -> direction.streamFrom(pp, Optional.empty())
+            .limit(limit).filter(p -> {
+                Piece target = gs.getPieceAt(p);
+                return target != null && target.getOwner() != pp.getPiece().getOwner();
+            }).limit(1).map(p -> new EatPiece(pp, p));
+    }
+
 }
