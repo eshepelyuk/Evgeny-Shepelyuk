@@ -60,7 +60,7 @@ public class GameActionSupplierBoundedMovesTest {
     }
 
     @Test
-    public void shouldAllowMovesWithin() {
+    public void shouldAllowMovesWithinBounds() {
         PiecePosition position = new PiecePosition(new Queen(Player.Black), positions[0]);
 
         // when direction is free then can move withing bound
