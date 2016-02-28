@@ -11,14 +11,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static chess.actions.KillPieceIterator.createKillPieceActionSupplier;
+import static chess.actions.EatPieceIterator.createEatPieceSupplier;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 
 @RunWith(Parameterized.class)
-public class KillPieceIteratorTest {
+public class EatPieceIteratorTest {
     private final GameActionSupplier testSupplier;
 
     private final Position closeTarget;
@@ -32,26 +32,26 @@ public class KillPieceIteratorTest {
     public static List<Object[]> parameters() {
         return Arrays.asList(
             new Object[]{
-                createKillPieceActionSupplier(Direction.DOWN_RIGHT), new Position("e4"), new Position("f3")
+                createEatPieceSupplier(Direction.DOWN_RIGHT), new Position("e4"), new Position("f3")
             }, new Object[]{
-                createKillPieceActionSupplier(Direction.DOWN_LEFT), new Position("c4"), new Position("b3")
+                createEatPieceSupplier(Direction.DOWN_LEFT), new Position("c4"), new Position("b3")
             }, new Object[]{
-                createKillPieceActionSupplier(Direction.UP_LEFT), new Position("c6"), new Position("b7")
+                createEatPieceSupplier(Direction.UP_LEFT), new Position("c6"), new Position("b7")
             }, new Object[]{
-                createKillPieceActionSupplier(Direction.UP_RIGHT), new Position("e6"), new Position("f7")
+                createEatPieceSupplier(Direction.UP_RIGHT), new Position("e6"), new Position("f7")
             }, new Object[]{
-                createKillPieceActionSupplier(Direction.UP), new Position("d6"), new Position("d7")
+                createEatPieceSupplier(Direction.UP), new Position("d6"), new Position("d7")
             }, new Object[]{
-                createKillPieceActionSupplier(Direction.RIGHT), new Position("e5"), new Position("f5")
+                createEatPieceSupplier(Direction.RIGHT), new Position("e5"), new Position("f5")
             }, new Object[]{
-                createKillPieceActionSupplier(Direction.DOWN), new Position("d4"), new Position("d3")
+                createEatPieceSupplier(Direction.DOWN), new Position("d4"), new Position("d3")
             }, new Object[]{
-                createKillPieceActionSupplier(Direction.LEFT), new Position("c5"), new Position("b5")
+                createEatPieceSupplier(Direction.LEFT), new Position("c5"), new Position("b5")
             }
         );
     }
 
-    public KillPieceIteratorTest(GameActionSupplier supplier, Position closeTarget, Position distantTarget) {
+    public EatPieceIteratorTest(GameActionSupplier supplier, Position closeTarget, Position distantTarget) {
         this.testSupplier = supplier;
         this.closeTarget = closeTarget;
         this.distantTarget = distantTarget;

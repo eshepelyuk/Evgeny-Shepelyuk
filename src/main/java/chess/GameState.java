@@ -117,10 +117,10 @@ public class GameState {
             MovePiece movePiece = (MovePiece) action;
             ofNullable(positionToPieceMap.remove(movePiece.getPiecePosition().getPosition())).ifPresent(piece -> placePiece(piece, movePiece.getTarget()));
             switchPlayer();
-        } else if (action instanceof KillPiece) {
-            KillPiece killPiece = (KillPiece) action;
-            positionToPieceMap.remove(killPiece.getTarget());
-            applyAction(new MovePiece(killPiece.getPiecePosition(), killPiece.getTarget()));
+        } else if (action instanceof EatPiece) {
+            EatPiece eatPiece = (EatPiece) action;
+            positionToPieceMap.remove(eatPiece.getTarget());
+            applyAction(new MovePiece(eatPiece.getPiecePosition(), eatPiece.getTarget()));
         }
     }
 

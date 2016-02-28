@@ -32,7 +32,7 @@ public class MovePieceIterator implements Iterator<Position> {
         return currentPosition;
     }
 
-    public static GameActionSupplier createMovePieceActionSupplier(Direction direction) {
+    public static GameActionSupplier createMovePieceSupplier(Direction direction) {
         return (PiecePosition pp, GameState gs) -> StreamSupport
             .stream(((Iterable<Position>) () -> new MovePieceIterator(pp.getPosition(), gs, direction)).spliterator(), false)
             .map(p -> new MovePiece(pp, p));

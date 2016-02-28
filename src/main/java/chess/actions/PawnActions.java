@@ -30,13 +30,13 @@ public class PawnActions {
     protected static GameActionSupplier KILL_FWD_RIGHT = (current, gameState) -> current.getPosition().right(1)
         .flatMap(p -> current.isWhite() ? p.up(1) : p.down(1))
         .filter(p -> !gameState.isFreeAt(p) && gameState.getPieceAt(p).getOwner() != current.getPiece().getOwner())
-        .map(p -> of(new KillPiece(current, p)))
+        .map(p -> of(new EatPiece(current, p)))
         .orElse(empty());
 
     protected static GameActionSupplier KILL_FWD_LEFT = (current, gameState) -> current.getPosition().left(1)
         .flatMap(p -> current.isWhite() ? p.up(1) : p.down(1))
         .filter(p -> !gameState.isFreeAt(p) && gameState.getPieceAt(p).getOwner() != current.getPiece().getOwner())
-        .map(p -> of(new KillPiece(current, p)))
+        .map(p -> of(new EatPiece(current, p)))
         .orElse(empty());
 
     protected static GameActionSupplier PAWN_KILLS = filterSuppliers(IS_PAWN, KILL_FWD_LEFT, KILL_FWD_RIGHT);

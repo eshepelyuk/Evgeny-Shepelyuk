@@ -1,6 +1,6 @@
 package chess;
 
-import chess.actions.KillPiece;
+import chess.actions.EatPiece;
 import chess.actions.MovePiece;
 import chess.pieces.Pawn;
 import chess.pieces.Piece;
@@ -124,7 +124,7 @@ public class GameStateTest {
 
         //when
         assertThat(state.getCurrentPlayer(), is(Player.White));
-        state.applyAction(new KillPiece(current, target.getPosition()));
+        state.applyAction(new EatPiece(current, target.getPosition()));
 
         //then piece if moved, palyer is switched
         assertThat(state.getPieceAt(current.getPosition()), is((Piece) null));

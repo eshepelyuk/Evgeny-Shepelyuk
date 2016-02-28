@@ -1,8 +1,8 @@
 package chess;
 
+import chess.actions.EatPiece;
 import chess.actions.GameAction;
 import chess.actions.GameActionSupplier;
-import chess.actions.KillPiece;
 import chess.actions.MovePiece;
 
 import java.util.Set;
@@ -28,7 +28,7 @@ public class PositionExtractor {
 
     public Set<Position> extractKills(GameActionSupplier supplier, PiecePosition piecePosition) {
         return supplier.apply(piecePosition, gameState)
-            .filter(action -> action instanceof KillPiece)
+            .filter(action -> action instanceof EatPiece)
             .map(GameAction::getTarget)
             .collect(Collectors.toSet());
     }
