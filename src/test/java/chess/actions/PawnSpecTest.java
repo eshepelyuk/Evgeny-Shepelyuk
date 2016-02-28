@@ -57,15 +57,7 @@ public class PawnSpecTest extends PawnSpec {
 
         // kill to left
         gameState.placePiece(new King(Player.Black), new Position("a3"));
-        positions = extractPositions(PawnSpec.KILL_FWD_LEFT, pawn);
-        assertThat(positions.size(), is(1));
-        assertThat(positions, hasItem(new Position("a3")));
-
-        // kill to right
         gameState.placePiece(new Queen(Player.Black), new Position("c3"));
-        positions = extractPositions(PawnSpec.KILL_FWD_RIGHT, pawn);
-        assertThat(positions.size(), is(1));
-        assertThat(positions, hasItem(new Position("c3")));
 
         //
         positions = extractPositions(PawnSpec.PAWN_KILLS, pawn);
@@ -80,16 +72,6 @@ public class PawnSpecTest extends PawnSpec {
 
         // no kills
         Set<Position> positions = extractPositions(PawnSpec.PAWN_KILLS, pawn);
-        assertThat(positions.size(), is(0));
-
-        // kill to left
-        gameState.placePiece(new King(Player.White), new Position("a3"));
-        positions = extractPositions(PawnSpec.KILL_FWD_LEFT, pawn);
-        assertThat(positions.size(), is(0));
-
-        // kill to right
-        gameState.placePiece(new Queen(Player.White), new Position("c3"));
-        positions = extractPositions(PawnSpec.KILL_FWD_RIGHT, pawn);
         assertThat(positions.size(), is(0));
 
         //
