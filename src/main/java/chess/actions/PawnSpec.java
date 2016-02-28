@@ -9,7 +9,7 @@ import static chess.actions.GameActionSupplier.filterSuppliers;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
 
-public class PawnActions {
+public class PawnSpec {
 
     private static Predicate<PiecePosition> IS_PAWN = piece -> piece.getPiece() instanceof chess.pieces.Pawn;
 
