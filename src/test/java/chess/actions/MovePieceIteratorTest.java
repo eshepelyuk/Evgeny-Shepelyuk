@@ -1,9 +1,6 @@
 package chess.actions;
 
-import chess.GameState;
-import chess.PiecePosition;
-import chess.Player;
-import chess.Position;
+import chess.*;
 import chess.pieces.Pawn;
 import chess.pieces.Queen;
 import org.junit.Test;
@@ -13,7 +10,6 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static chess.actions.MovePieceIterator.createMovePieceActionSupplier;
 import static org.hamcrest.core.Is.is;
@@ -26,7 +22,7 @@ public class MovePieceIteratorTest {
     private final GameActionSupplier testSupplier;
     private final Position[] expectedPositions;
 
-    private GameState gameState = new GameState();
+    private PositionExtractor extractor = new PositionExtractor(new GameState());
 
     PiecePosition position = new PiecePosition(new Queen(Player.Black), "d5");
 
@@ -45,6 +41,18 @@ public class MovePieceIteratorTest {
             }, new Object[]{
                 createMovePieceActionSupplier(Direction.UP_RIGHT),
                 new Position[]{new Position("e6"), new Position("f7"), new Position("g8")}
+            }, new Object[]{
+                createMovePieceActionSupplier(Direction.UP),
+                new Position[]{new Position("d6"), new Position("d7"), new Position("d8")}
+            }, new Object[]{
+                createMovePieceActionSupplier(Direction.RIGHT),
+                new Position[]{new Position("e5"), new Position("f5"), new Position("g5"), new Position("h5")}
+            }, new Object[]{
+                createMovePieceActionSupplier(Direction.DOWN),
+                new Position[]{new Position("d4"), new Position("d3"), new Position("d2"), new Position("d1")}
+            }, new Object[]{
+                createMovePieceActionSupplier(Direction.LEFT),
+                new Position[]{new Position("c5"), new Position("b5"), new Position("a5")}
             }
         );
     }
@@ -56,19 +64,17 @@ public class MovePieceIteratorTest {
 
     @Test
     public void shouldAllowMoves() throws Exception {
-        // direction is free
-        Set<Position> positions = extractPositions(testSupplier, position);
+        // when direction is free then can move ntil end of board
+        Set<Position> positions = extractor.extractMoves(testSupplier, position);
         assertThat(positions.size(), is(expectedPositions.length));
         assertThat(positions, hasItems(expectedPositions));
 
-        // place obstacle
-        gameState.placePiece(new Pawn(Player.Black), expectedPositions[1]);
-        positions = extractPositions(testSupplier, position);
+        // when place obstacle
+        extractor.getGameState().placePiece(new Pawn(Player.Black), expectedPositions[1]);
+
+        // then moves are limited
+        positions = extractor.extractMoves(testSupplier, position);
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItems(expectedPositions[0]));
-    }
-
-    Set<Position> extractPositions(GameActionSupplier supplier, PiecePosition piecePosition) {
-        return supplier.apply(piecePosition, gameState).map(GameAction::getTarget).collect(Collectors.toSet());
     }
 }

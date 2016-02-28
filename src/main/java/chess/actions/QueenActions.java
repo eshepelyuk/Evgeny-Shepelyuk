@@ -15,7 +15,11 @@ public class QueenActions {
         createMovePieceActionSupplier(Direction.DOWN_LEFT),
         createMovePieceActionSupplier(Direction.DOWN_RIGHT),
         createMovePieceActionSupplier(Direction.UP_LEFT),
-        createMovePieceActionSupplier(Direction.UP_RIGHT)
+        createMovePieceActionSupplier(Direction.UP_RIGHT),
+        createMovePieceActionSupplier(Direction.UP),
+        createMovePieceActionSupplier(Direction.RIGHT),
+        createMovePieceActionSupplier(Direction.DOWN),
+        createMovePieceActionSupplier(Direction.LEFT)
     );
 
     protected static GameActionSupplier QUEEN_KILLS = filterSuppliers(IS_QUEEN);
