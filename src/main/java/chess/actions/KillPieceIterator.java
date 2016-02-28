@@ -8,14 +8,14 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.stream.StreamSupport;
 
-public class MovePieceIterator implements Iterator<Position> {
+public class KillPieceIterator implements Iterator<Position> {
 
     private final GameState gameState;
     private final Direction direction;
 
     private Position currentPosition;
 
-    public MovePieceIterator(Position initialPosition, GameState gameState, Direction direction) {
+    public KillPieceIterator(Position initialPosition, GameState gameState, Direction direction) {
         this.gameState = gameState;
         this.direction = direction;
         this.currentPosition = initialPosition;
@@ -32,10 +32,10 @@ public class MovePieceIterator implements Iterator<Position> {
         return currentPosition;
     }
 
-    public static GameActionSupplier createMovePieceActionSupplier(Direction direction) {
+    public static GameActionSupplier createKillPieceActionSupplier(Direction direction) {
         return (PiecePosition pp, GameState gs) -> StreamSupport
-            .stream(((Iterable<Position>) () -> new MovePieceIterator(pp.getPosition(), gs, direction)).spliterator(), false)
-            .map(p -> new MovePiece(pp, p));
+            .stream(((Iterable<Position>) () -> new KillPieceIterator(pp.getPosition(), gs, direction)).spliterator(), false)
+            .map(p -> new KillPiece(pp, p));
     }
 
 }
