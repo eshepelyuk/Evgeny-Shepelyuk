@@ -5,7 +5,7 @@ import chess.actions.*;
 import chess.pieces.*;
 
 import java.util.AbstractMap;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ public class GameState {
      * Create the game state.
      */
     public GameState() {
-        positionToPieceMap = new LinkedHashMap<>();
+        positionToPieceMap = new HashMap<>();
     }
 
     public Player getCurrentPlayer() {
@@ -53,14 +53,14 @@ public class GameState {
         placePiece(new Bishop(Player.White), new Position("f1"));
         placePiece(new Knight(Player.White), new Position("g1"));
         placePiece(new Rook(Player.White), new Position("h1"));
-        placePiece(new chess.pieces.Pawn(Player.White), new Position("a2"));
-        placePiece(new chess.pieces.Pawn(Player.White), new Position("b2"));
-        placePiece(new chess.pieces.Pawn(Player.White), new Position("c2"));
-        placePiece(new chess.pieces.Pawn(Player.White), new Position("d2"));
-        placePiece(new chess.pieces.Pawn(Player.White), new Position("e2"));
-        placePiece(new chess.pieces.Pawn(Player.White), new Position("f2"));
-        placePiece(new chess.pieces.Pawn(Player.White), new Position("g2"));
-        placePiece(new chess.pieces.Pawn(Player.White), new Position("h2"));
+        placePiece(new Pawn(Player.White), new Position("a2"));
+        placePiece(new Pawn(Player.White), new Position("b2"));
+        placePiece(new Pawn(Player.White), new Position("c2"));
+        placePiece(new Pawn(Player.White), new Position("d2"));
+        placePiece(new Pawn(Player.White), new Position("e2"));
+        placePiece(new Pawn(Player.White), new Position("f2"));
+        placePiece(new Pawn(Player.White), new Position("g2"));
+        placePiece(new Pawn(Player.White), new Position("h2"));
 
         // Black Pieces
         placePiece(new Rook(Player.Black), new Position("a8"));
@@ -71,14 +71,14 @@ public class GameState {
         placePiece(new Bishop(Player.Black), new Position("f8"));
         placePiece(new Knight(Player.Black), new Position("g8"));
         placePiece(new Rook(Player.Black), new Position("h8"));
-        placePiece(new chess.pieces.Pawn(Player.Black), new Position("a7"));
-        placePiece(new chess.pieces.Pawn(Player.Black), new Position("b7"));
-        placePiece(new chess.pieces.Pawn(Player.Black), new Position("c7"));
-        placePiece(new chess.pieces.Pawn(Player.Black), new Position("d7"));
-        placePiece(new chess.pieces.Pawn(Player.Black), new Position("e7"));
-        placePiece(new chess.pieces.Pawn(Player.Black), new Position("f7"));
-        placePiece(new chess.pieces.Pawn(Player.Black), new Position("g7"));
-        placePiece(new chess.pieces.Pawn(Player.Black), new Position("h7"));
+        placePiece(new Pawn(Player.Black), new Position("a7"));
+        placePiece(new Pawn(Player.Black), new Position("b7"));
+        placePiece(new Pawn(Player.Black), new Position("c7"));
+        placePiece(new Pawn(Player.Black), new Position("d7"));
+        placePiece(new Pawn(Player.Black), new Position("e7"));
+        placePiece(new Pawn(Player.Black), new Position("f7"));
+        placePiece(new Pawn(Player.Black), new Position("g7"));
+        placePiece(new Pawn(Player.Black), new Position("h7"));
 
         //current player
         this.currentPlayer = Player.White;
