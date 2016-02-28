@@ -26,7 +26,7 @@ public class EatPieceIteratorTest {
 
     private PositionExtractor extractor = new PositionExtractor(new GameState());
 
-    PiecePosition position = new PiecePosition(new Queen(Player.Black), "d5");
+    PiecePosition position = new PiecePosition(new Queen(Player.White), "d5");
 
     @Parameterized.Parameters
     public static List<Object[]> parameters() {
@@ -60,22 +60,40 @@ public class EatPieceIteratorTest {
     @Test
     public void shouldAllowKills() {
         // when direction is free then no kills
-        Set<Position> positions = extractor.extractKills(testSupplier, position);
+        Set<Position> positions = extractor.extractEats(testSupplier, position);
         assertThat(positions.size(), is(0));
 
         // when place distant target
         extractor.getGameState().placePiece(new Pawn(Player.Black), distantTarget);
 
-        // then distant target is allowed to be killed
-        positions = extractor.extractKills(testSupplier, position);
+        // then distant target is allowed to be eaten
+        positions = extractor.extractEats(testSupplier, position);
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItem(distantTarget));
 
         // when place close target
         extractor.getGameState().placePiece(new Pawn(Player.Black), closeTarget);
 
-        // then close target is allowed to be killed
-        positions = extractor.extractKills(testSupplier, position);
+        // then allowed to be eaten
+        positions = extractor.extractEats(testSupplier, position);
+        assertThat(positions.size(), is(1));
+        assertThat(positions, hasItems(closeTarget));
+    }
+
+    @Test
+    public void shouldAllowEatingOnlyForDifferentColor() {
+        // when place distant target with the same color
+        extractor.getGameState().placePiece(new Pawn(Player.White), distantTarget);
+
+        // then not allowed to be eaten
+        Set<Position> positions = extractor.extractEats(testSupplier, position);
+        assertThat(positions.size(), is(0));
+
+        // when place close target of different color
+        extractor.getGameState().placePiece(new Pawn(Player.Black), closeTarget);
+
+        // then allowed to be eaten
+        positions = extractor.extractEats(testSupplier, position);
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItems(closeTarget));
     }

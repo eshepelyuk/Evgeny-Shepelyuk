@@ -26,7 +26,7 @@ public class PositionExtractor {
             .collect(Collectors.toSet());
     }
 
-    public Set<Position> extractKills(GameActionSupplier supplier, PiecePosition piecePosition) {
+    public Set<Position> extractEats(GameActionSupplier supplier, PiecePosition piecePosition) {
         return supplier.apply(piecePosition, gameState)
             .filter(action -> action instanceof EatPiece)
             .map(GameAction::getTarget)

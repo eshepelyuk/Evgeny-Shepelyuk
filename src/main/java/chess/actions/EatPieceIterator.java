@@ -3,6 +3,7 @@ package chess.actions;
 import chess.GameState;
 import chess.PiecePosition;
 import chess.Position;
+import chess.pieces.Piece;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -32,8 +33,10 @@ public class EatPieceIterator implements Iterator<Position> {
     public static GameActionSupplier createEatPieceSupplier(Direction direction) {
         return (PiecePosition pp, GameState gs) -> StreamSupport
             .stream(((Iterable<Position>) () -> new EatPieceIterator(pp.getPosition(), direction)).spliterator(), false)
-            .filter(p -> !gs.isFreeAt(p))
-            .limit(1)
+            .filter(p -> {
+                Piece target = gs.getPieceAt(p);
+                return target != null && target.getOwner() != pp.getPiece().getOwner();
+            }).limit(1)
             .map(p -> new EatPiece(pp, p));
     }
 

@@ -149,9 +149,4 @@ public class GameState {
             .filter(e -> e.getValue().size() > 0)
             .collect(toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
-
-    public Set<Position> extractPositions(GameActionSupplier supplier, PiecePosition piecePosition) {
-        return supplier.apply(piecePosition, this).map(GameAction::getTarget).collect(Collectors.toSet());
-    }
-
 }
