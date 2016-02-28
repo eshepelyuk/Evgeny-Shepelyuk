@@ -38,4 +38,11 @@ public class MovePieceIterator implements Iterator<Position> {
             .map(p -> new MovePiece(pp, p));
     }
 
+    public static GameActionSupplier createLimitedMovePieceSupplier(Direction direction, long limit) {
+        return (PiecePosition pp, GameState gs) -> StreamSupport
+            .stream(((Iterable<Position>) () -> new MovePieceIterator(pp.getPosition(), gs, direction)).spliterator(), false)
+            .limit(limit)
+            .map(p -> new MovePiece(pp, p));
+    }
+
 }

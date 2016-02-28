@@ -2,6 +2,7 @@ package chess;
 
 import chess.pieces.Pawn;
 import chess.pieces.Piece;
+import chess.pieces.Queen;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -86,14 +87,22 @@ public class CLITest {
     }
 
     @Test
-    public void testMoveCommandProper() {
-        CLI cli = runCliWithInput("move a2 a4");
+    public void testMoveCommandWithFoolMate() {
+        CLI cli = runCliWithInput("move f2 f4", "move e7 e6", "move g2 g4", "move d8 h4");
         List<String> output = captureOutput();
 
         //then board is changed and player switched
-        assertThat(cli.gameState.getPieceAt("a2"), is((Piece) null));
-        assertThat(cli.gameState.getPieceAt("a4"), is(new Pawn(Player.White)));
-        assertThat(output, hasItems("Black's Move"));
+        assertThat(cli.gameState.getPieceAt("f2"), is((Piece) null));
+        assertThat(cli.gameState.getPieceAt("e7"), is((Piece) null));
+        assertThat(cli.gameState.getPieceAt("g2"), is((Piece) null));
+        assertThat(cli.gameState.getPieceAt("d8"), is((Piece) null));
+
+        assertThat(cli.gameState.getPieceAt("f4"), is(new Pawn(Player.White)));
+        assertThat(cli.gameState.getPieceAt("e6"), is(new Pawn(Player.Black)));
+        assertThat(cli.gameState.getPieceAt("g4"), is(new Pawn(Player.White)));
+        assertThat(cli.gameState.getPieceAt("h4"), is(new Queen(Player.Black)));
+
+        assertThat(output, hasItems("White's Move"));
     }
 
     @Test
