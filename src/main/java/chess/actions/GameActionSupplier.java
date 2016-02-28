@@ -25,10 +25,22 @@ public interface GameActionSupplier extends BiFunction<PiecePosition, GameState,
             .orElse(empty());
     }
 
+    /**
+     * Creates {@link GameActionSupplier} that able to produce {@link MovePiece} actions for particular direction.
+     *
+     * @param direction
+     * @return
+     */
     static GameActionSupplier createMovePieceSupplier(Direction direction) {
         return (PiecePosition pp, GameState gs) -> direction.streamFrom(pp, of(gs::isFreeAt)).map(p -> new MovePiece(pp, p));
     }
 
+    /**
+     * Creates {@link GameActionSupplier} that able to produce {@link MovePiece} actions for particular direction.
+     * @param direction
+     * @param limit - limit fo moves to be produced
+     * @return
+     */
     static GameActionSupplier createBoundedMovePieceSupplier(Direction direction, long limit) {
         return (PiecePosition pp, GameState gs) -> direction.streamFrom(pp, of(gs::isFreeAt))
             .limit(limit)
