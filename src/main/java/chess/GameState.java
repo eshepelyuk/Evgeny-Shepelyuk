@@ -141,6 +141,9 @@ public class GameState {
 
     protected static GameActionSupplier PIECES_ACTIONS = GameActionSupplier.concatSuppliers(
         PawnSpec.PAWN_ACTIONS,
+        KingSpec.KING_ACTIONS,
+        BishopSpec.BISHOP_ACTIONS,
+        RookSpec.ROOK_ACTIONS,
         QueenSpec.QUEEN_ACTIONS);
 
     public Map<Position, Set<? extends GameAction>> availableMoves() {
