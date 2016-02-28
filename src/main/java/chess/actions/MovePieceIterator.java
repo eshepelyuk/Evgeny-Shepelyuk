@@ -40,5 +40,4 @@ public class MovePieceIterator implements Iterator<Position> {
             .map(p -> new MovePiece(pp, p));
     }
 
-
 }
